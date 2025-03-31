@@ -1,8 +1,9 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
+from .routers.transactions import router as transactions_router
 
 class Fruit(BaseModel):
     name: str
@@ -44,6 +45,8 @@ app = FastAPI(
     },
     debug=True)
 
+app.include_router(transactions_router)  # transaction router
+
 origins = [
     "http://localhost:3000",
     # Add more origins here
@@ -56,6 +59,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/")
+async def root():
+    return {"message": "Hello Bigger Applications!"}
+
 
 memory_db = {"fruits": []}
 
