@@ -1,0 +1,10 @@
+{
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.languageServerMode": "full",
+    "python.createEnvironment.contentButton": "show",
+    "python.languageServer": "Pylance",
+    "python.missingPackage.severity": "Error",
+    "python.autoComplete.extraPaths": [
+        "./api"
+    ]
+}

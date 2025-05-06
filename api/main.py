@@ -1,15 +1,15 @@
 import uvicorn
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List
+
+import api
+import api.routers
+import api.routers.transactions
+
+# from api import routers, commands, persistence
 from .routers.transactions import router as transactions_router
-
-class Fruit(BaseModel):
-    name: str
-
-class Fruits(BaseModel):
-    fruits: List[Fruit]
+from .containers import ApplicationContainer
+from dependency_injector.wiring import Provide, inject
 
 tags_metadata = [
     {
@@ -26,8 +26,11 @@ tags_metadata = [
     },
 ]
 
+def create_app() -> FastAPI:
+    container = ApplicationContainer()
+    # container.wire(modules=[".routers.transactions"])
 
-app = FastAPI(
+    app = FastAPI(
     openapi_tags=tags_metadata,
     title="ChimichangApp",
     description="description",
@@ -45,37 +48,33 @@ app = FastAPI(
     },
     debug=True)
 
-app.include_router(transactions_router)  # transaction router
+    app.container = container
+    app.include_router(transactions_router)
 
-origins = [
+    origins = [
     "http://localhost:3000",
     # Add more origins here
-]
+    ]
 
-app.add_middleware(
+    app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
-)
+    allow_headers=["*"])
+
+    return app
+
+app = create_app()
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello Bigger Applications!"}
+# @app.get("/")
+# @inject
+# async def root(search_service: Annotated[
+#         Service, Depends(Provide[Container.service])
+#     ]) -> dict[str, str]:
+#     return search_service.process()
 
 
-memory_db = {"fruits": []}
-
-@app.get("/fruits", response_model=Fruits, tags=["users"])
-def get_fruits():
-    return Fruits(fruits=memory_db["fruits"])
-
-@app.post("/fruits", response_model=Fruit, tags=["items"])
-def add_fruit(fruit: Fruit):
-    memory_db["fruits"].append(fruit)
-    return fruit
-    
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

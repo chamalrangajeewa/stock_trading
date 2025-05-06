@@ -1,5 +1,7 @@
-fastapi
+fastapi[standard]
 uvicorn
 pydantic
 dependency-injector
 python-multipart
+mediatr
+SQLAlchemy

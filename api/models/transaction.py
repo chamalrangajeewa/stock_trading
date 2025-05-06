@@ -2,11 +2,11 @@ from datetime import datetime
 from pydantic import BaseModel
 
 class AccountSnapshot:
-   externalId : str
+   externalAccountId : str
    investmentTotal : float
    investmentCommitted : float
    cashBalance : float
-   profitOrLoss : float
+   gains : float
 
 class PurchaseTransaction(BaseModel):
     

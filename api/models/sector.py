@@ -2,6 +2,8 @@ from api.models.security import Security
 from pydantic import BaseModel
 from typing import List
 
+from api.models.securitysnapshot import SecuritySnapshot
+
 class Sector(BaseModel):
     name : str
     externalId : str
@@ -12,4 +14,4 @@ class SectorSnapshot(BaseModel):
     externalId : str
     percentageAllocation : float
     realisedAllocation : float   
-    securities: List[Security]
+    securitySnapshots: List[SecuritySnapshot]
