@@ -8,12 +8,18 @@ from ..containers import ApplicationContainer
 from api.routers.service import Service
 from api.routers.containers import RouteContainer
 from mediatr import Mediator
+from typing import Annotated
+import pandas as pd
+from io import BytesIO
 
 class DepositCashRequest(BaseModel):
     accountId : str
     amount : float
     externalTransactionId : str
-    transactionDate: datetime    
+    transactionDate: datetime
+    description : str
+    balance : float
+    settlementDate : datetime    
     
 router = APIRouter(
     prefix="/transactions",
@@ -25,7 +31,17 @@ router = APIRouter(
 async def deposit_cash(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
     payload : DepositCashRequest):
-    return await mediator.send_async(DepositCashCommand())
+    
+    command : DepositCashCommand = DepositCashCommand()
+    command.externalAccountId = payload.accountId
+    command.externalId = payload.externalTransactionId
+    command.date = payload.transactionDate
+    command.amount = payload.amount
+    command.description = payload.description
+    command.balance = payload.balance
+    command.settlementDate = payload.settlementDate
+
+    return await mediator.send_async(command)
  
 # @router.get("/", tags=["transactions"])
 # @inject
@@ -49,6 +65,14 @@ async def deposit_cash(
 # async def widraw_cash():
 #     return {"username": "fakecurrentuser"}
 
-# @router.post("/uploadfile/")
-# async def create_upload_file(file: UploadFile):
-#     return {"filename": file.filename}
+@router.post("/uploadfile/")
+async def create_upload_file(file: UploadFile):
+    return {"filename": file.filename}
+
+@router.post("/files/")
+async def create_file(file: Annotated[bytes, File()]):
+    
+    df = pd.read_csv(BytesIO(file))
+    for row in df.itertuples():
+        print(row)
+    return df.to_dict()

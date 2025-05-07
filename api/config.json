@@ -1,13 +1,4 @@
 {
     "version": "1.0.0",
-    "configurations": [
-
-        {
-            "name": "Python: Module",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "api.main",
-            "env": {"PYTHONPATH": "${workspaceFolder}/api/"}
-        }
-    ]
+    "db" : {"url": "sqlite:///./webapp.db"} 
 }

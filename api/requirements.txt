@@ -4,4 +4,5 @@ pydantic
 dependency-injector
 python-multipart
 mediatr
-SQLAlchemy
+sqlalchemy
+pandas

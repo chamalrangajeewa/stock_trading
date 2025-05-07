@@ -2,10 +2,6 @@ import uvicorn
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-import api
-import api.routers
-import api.routers.transactions
-
 # from api import routers, commands, persistence
 from .routers.transactions import router as transactions_router
 from .containers import ApplicationContainer
@@ -28,6 +24,13 @@ tags_metadata = [
 
 def create_app() -> FastAPI:
     container = ApplicationContainer()
+    container.config.from_dict(
+        {
+            "version": "1.0.0",
+            "db" : {"url": "sqlite:///./webapp.db"} 
+        }
+    )
+   
     # container.wire(modules=[".routers.transactions"])
 
     app = FastAPI(
@@ -66,14 +69,6 @@ def create_app() -> FastAPI:
     return app
 
 app = create_app()
-
-
-# @app.get("/")
-# @inject
-# async def root(search_service: Annotated[
-#         Service, Depends(Provide[Container.service])
-#     ]) -> dict[str, str]:
-#     return search_service.process()
 
 
 if __name__ == "__main__":

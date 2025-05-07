@@ -7,10 +7,12 @@ from .widrawcashcommandhandler import WidrawCashCommandHandler
 class Container(containers.DeclarativeContainer):
 
     database = providers.Dependency()
+    storage_client = providers.Dependency()
 
     depositcashcommand_handler = providers.Factory(
         DepositCashCommandHandler,
-        databaseService = database 
+        databaseService = database,
+        storageClient = storage_client 
     )
 
     purchasesecuritycommand_handler = providers.Factory(

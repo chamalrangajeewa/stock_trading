@@ -25,16 +25,19 @@ def create_Handler(HandlerCls:type, is_behavior:bool = False):
 class ApplicationContainer(containers.DeclarativeContainer):
 
     wiring_config = containers.WiringConfiguration(modules=[".routers.transactions"])
-    
+    config = providers.Configuration(strict=True)
+
     persistence_package = providers.Container(
-        PersistenceContainer
+        PersistenceContainer,
+        config = config
     )
 
     persistence_package.container.wire(modules=[".routers.transactions"])
 
     command_package = providers.Container(
         CommandContainer,
-        database = persistence_package.container.database
+        database = persistence_package.container.database,
+        storage_client = persistence_package.container.database_sqllite
     )
 
     command_package.container.wire(modules=[".routers.transactions"])
