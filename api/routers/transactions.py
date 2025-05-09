@@ -6,6 +6,7 @@ from typing import Annotated
 import pandas as pd
 from io import BytesIO
 
+from .utility import CreateRequest
 from ..commands import WidrawCashCommand,DepositCashCommand,PurchaseSecurityCommand,SellSecurityCommand
 from .depositcashrequest import DepositCashRequest
 from .widrawcashrequest import WidrawCashRequest
@@ -107,7 +108,23 @@ async def create_upload_file(file: UploadFile):
 @router.post("/files/")
 async def create_file(file: Annotated[bytes, File()]):
     
+    squares = [x**2 for x in range(10)]
     df = pd.read_csv(BytesIO(file))
     for row in df.itertuples():
+        x, *y = row       
+        _, a, b, c, d, e, f, g, h, i, g, h, i = row
+        CreateRequest(
+            row.Type, 
+            row.Account, 
+            row.Amount,
+            row.Number,
+            row.Date,
+            row.Particular,
+            row.Balance,
+            row.SettlementDate,
+            row.Security,
+            row.Quantity,
+            row.Price,
+            row.Fees)
         print(row)
     return df.to_dict()
