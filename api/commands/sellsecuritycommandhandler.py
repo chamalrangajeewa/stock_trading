@@ -1,8 +1,8 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
 
-from api.persistence.database import Database
-from api.persistence.service import AccountEntity, SecuritySnapShotEntity, TransactionEntity, databaseService
+from ..persistence.database import Database
+from ..persistence.service import AccountEntity, SecuritySnapShotEntity, TransactionEntity
 
 class SellSecurityCommand():
     
@@ -26,7 +26,7 @@ class SellSecurityCommand():
     newBalance : float
     settlementDate : datetime
 
-class SalesSecurityCommandHandler():
+class SellSecurityCommandHandler():
     
    def __init__(self, storageClient : Database):
        self._storageClient = storageClient       
@@ -71,7 +71,7 @@ class SalesSecurityCommandHandler():
                 raise Exception("no security snapshot found matching the filter")
 
             securitySnapShotEntity.quantity -= request.quantity
-            securitySnapShotEntity.totalRealisedProfit += (request.unitPrice - securitySnapShotEntity.averagePerUnitCost) * request.quantity
+            securitySnapShotEntity.totalRealisedProfit += ((request.netAmount/request.quantity) - securitySnapShotEntity.averagePerUnitCost) * request.quantity
             securitySnapShotEntity.totalSaleFees += request.fees
             securitySnapShotEntity.totalSaleIncome += request.netAmount
             session.commit()

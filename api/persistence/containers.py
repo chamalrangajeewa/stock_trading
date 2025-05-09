@@ -1,8 +1,5 @@
 from dependency_injector import containers, providers
-
 from .database import Database
-
-from .service import databaseService
 
 class Container(containers.DeclarativeContainer):
 
@@ -12,9 +9,5 @@ class Container(containers.DeclarativeContainer):
     
     database_sqllite = providers.Factory(
         Database,
-        connectionstring = "sqlite:///./webapp.db"
-    )
-
-    database = providers.Factory(
-        databaseService
+        connectionstring = "sqlite:///./stock_trading.db"
     )

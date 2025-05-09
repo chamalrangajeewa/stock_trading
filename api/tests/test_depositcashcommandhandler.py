@@ -78,8 +78,8 @@ class TestDepositCashCommandHandler:
         command.date = datetime.datetime(2020, 5, 17)
         command.externalId = "trx_external"
         command.description = "cashdeposit"
-        command.amount = 1000
-        command.balance = 1000
+        command.netAmount = 1000
+        command.newBalance = 1000
         command.settlementDate = datetime.datetime(2020, 5, 17)
         return command
 

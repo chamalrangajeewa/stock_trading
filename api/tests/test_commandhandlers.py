@@ -5,10 +5,8 @@ from sqlalchemy import Connection
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 
-from api.persistence import database
-from api.persistence.service import AccountEntity, SecuritySnapShotEntity, TransactionEntity
-
-from ..commands import DepositCashCommandHandler, DepositCashCommand,WidrawCashCommandHandler, WidrawCashCommand, PurchaseSecurityCommandHandler,PurchaseSecurityCommand, SalesSecurityCommandHandler, SalesSecurityCommand
+from ..persistence.service import AccountEntity, SecuritySnapShotEntity, TransactionEntity
+from ..commands import DepositCashCommandHandler, DepositCashCommand,WidrawCashCommandHandler, WidrawCashCommand, PurchaseSecurityCommandHandler,PurchaseSecurityCommand, SellSecurityCommandHandler, SellSecurityCommand
 from ..persistence import Database
 
 class TestCommandHandler:
@@ -54,12 +52,12 @@ class TestCommandHandler:
         command.fees = amount * 0.0112
         return command
     
-    def defaultSalesSecurityCommand(self, externalId:str, securityId:str, unitPrice:float = 1, quantity:int = 10, amount:float = 0, balance:float = 0) -> SalesSecurityCommand:
-        command: SalesSecurityCommand = SalesSecurityCommand()
+    def defaultSellSecurityCommand(self, externalId:str, securityId:str, unitPrice:float = 1, quantity:int = 10, amount:float = 0, balance:float = 0) -> SellSecurityCommand:
+        command: SellSecurityCommand = SellSecurityCommand()
         command.externalAccountId = self.EXTERNAL_ACCOUNT_ID
         command.date = datetime.datetime(2020, 5, 17)
         command.externalId = externalId
-        command.description = SalesSecurityCommand.__name__
+        command.description = SellSecurityCommand.__name__
         command.netAmount = amount
         command.newBalance = balance
         command.settlementDate = datetime.datetime(2020, 5, 17)
@@ -130,7 +128,7 @@ class TestCommandHandler:
         handlers[DepositCashCommand.__name__] = DepositCashCommandHandler(database)
         handlers[WidrawCashCommand.__name__] = WidrawCashCommandHandler(database)
         handlers[PurchaseSecurityCommand.__name__] = PurchaseSecurityCommandHandler(database)
-        handlers[SalesSecurityCommand.__name__] = SalesSecurityCommandHandler(database)
+        handlers[SellSecurityCommand.__name__] = SellSecurityCommandHandler(database)
 
         return handlers
 
@@ -153,7 +151,7 @@ class TestCommandHandler:
         commands = [
             self.defaultDepositCashCommand(1,amount=10000), 
             self.defaultPurchaseSecurityCommand(2,'AAF.N0000', unitPrice=10, quantity=100, balance=9000),
-            self.defaultSalesSecurityCommand(3,'AAF.N0000', unitPrice=15, quantity=100, balance=9000),
+            self.defaultSellSecurityCommand(3,'AAF.N0000', unitPrice=15, quantity=100, balance=9000),
             self.defaultWidrawCashCommand(4,amount=1000), 
             ]
 
@@ -180,6 +178,6 @@ class TestCommandHandler:
         securitySnapShots[0].totalSaleIncome = 0
         accountEntity.fundBalance = 0
 
-        assert len(securitySnapShots) == len(1)
+        assert len(securitySnapShots) == 1
         assert len(transactions) == len(commands)
         

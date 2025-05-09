@@ -37,8 +37,9 @@ async def deposit_cash(
  
 
 @router.post("/purchase", tags=["transactions"])
+@inject
 async def buy_security(
-    mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
+    mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])],
     payload : PurchaseSecurityRequest):
  
     command : PurchaseSecurityCommand = PurchaseSecurityCommand()
@@ -53,11 +54,13 @@ async def buy_security(
     command.securityId = payload.securityId
     command.unitPrice = payload.unitPrice
     command.fees = payload.fees
+    command.quantity = payload.quantity
 
     return await mediator.send_async(command)
  
 
 @router.post("/sale", tags=["transactions"])
+@inject
 async def sell_security(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
     payload : SellSecurityRequest):
@@ -74,9 +77,13 @@ async def sell_security(
     command.securityId = payload.securityId
     command.unitPrice = payload.unitPrice
     command.fees = payload.fees
+    command.quantity = payload.quantity
+
+    return await mediator.send_async(command)
 
 
 @router.post("/cashOut", tags=["transactions"])
+@inject
 async def widraw_cash(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
     payload : WidrawCashRequest):

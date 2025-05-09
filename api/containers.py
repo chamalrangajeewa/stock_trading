@@ -2,7 +2,7 @@
 from typing import List
 from mediatr import Mediator
 from .persistence import PersistenceContainer 
-from .commands import CommandContainer, DepositCashCommandHandler, PurchaseSecurityCommandHandler, SalesSecurityCommandHandler,WidrawCashCommandHandler
+from .commands import CommandContainer, DepositCashCommandHandler, PurchaseSecurityCommandHandler, SellSecurityCommandHandler,WidrawCashCommandHandler
 from .routers.containers import RouteContainer
 
 from dependency_injector import containers, providers
@@ -36,7 +36,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     command_package = providers.Container(
         CommandContainer,
-        database = persistence_package.container.database,
         storage_client = persistence_package.container.database_sqllite
     )
 
@@ -50,7 +49,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     __handlertype_handlerFactory_pair = [(DepositCashCommandHandler, command_package.container.depositcashcommand_handler),
          (PurchaseSecurityCommandHandler, command_package.container.purchasesecuritycommand_handler),
-         (SalesSecurityCommandHandler, command_package.container.salessecuritycommand_handler),
+         (SellSecurityCommandHandler, command_package.container.sellsecuritycommand_handler),
          (WidrawCashCommandHandler, command_package.container.widrawcashcommand_handler)]
     
     collection =  providers.Object(__handlertype_handlerFactory_pair)

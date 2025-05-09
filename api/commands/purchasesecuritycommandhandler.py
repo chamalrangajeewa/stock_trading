@@ -55,7 +55,7 @@ class PurchaseSecurityCommandHandler():
             entity.perUnitCost = request.unitPrice
             entity.securityId = request.securityId
             entity.fees = request.fees
-            accountEntity.fundBalance = accountEntity.fundBalance - entity.netAmount
+            accountEntity.fundBalance -= entity.netAmount
             session.add(entity)
 
             securitySnapShotEntity: SecuritySnapShotEntity = session.query(SecuritySnapShotEntity).filter(

@@ -5,13 +5,12 @@ from mediatr import Mediator
 from api.commands import CommandContainer
 from api.persistence import PersistenceContainer
 
-from .service import Service
 from dependency_injector import containers, providers
     
 class RouteContainer(containers.DeclarativeContainer):
 
+    g = 1
     # wiring_config = containers.WiringConfiguration(modules=[".transactions"])
-    service = providers.Factory(Service)
 
     # persistence_package = providers.Container(
     #     PersistenceContainer

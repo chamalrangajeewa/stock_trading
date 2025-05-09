@@ -1,7 +1,7 @@
 from dependency_injector import containers, providers
 from .depositcashcommandhandler import DepositCashCommandHandler
 from .purchasesecuritycommandhandler import PurchaseSecurityCommandHandler
-from .sellsecuritycommandhandler import SalesSecurityCommandHandler
+from .sellsecuritycommandhandler import SellSecurityCommandHandler
 from .widrawcashcommandhandler import WidrawCashCommandHandler
     
 class Container(containers.DeclarativeContainer):
@@ -18,8 +18,8 @@ class Container(containers.DeclarativeContainer):
         storageClient = storage_client 
     )
 
-    salessecuritycommand_handler = providers.Factory(
-        SalesSecurityCommandHandler,
+    sellsecuritycommand_handler = providers.Factory(
+        SellSecurityCommandHandler,
         storageClient = storage_client 
     )
 

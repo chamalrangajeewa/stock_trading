@@ -1,5 +1,5 @@
 from .containers import Container as CommandContainer
 from .depositcashcommandhandler import DepositCashCommandHandler, DepositCashCommand
 from .purchasesecuritycommandhandler import PurchaseSecurityCommandHandler, PurchaseSecurityCommand
-from .sellsecuritycommandhandler import SalesSecurityCommandHandler, SellSecurityCommand
+from .sellsecuritycommandhandler import SellSecurityCommandHandler, SellSecurityCommand
 from .widrawcashcommandhandler import WidrawCashCommandHandler, WidrawCashCommand
