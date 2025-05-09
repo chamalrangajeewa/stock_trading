@@ -6,5 +6,10 @@
     "python.missingPackage.severity": "Error",
     "python.autoComplete.extraPaths": [
         "./api"
-    ]
+    ],
+    "python.testing.pytestArgs": [
+        "api"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }

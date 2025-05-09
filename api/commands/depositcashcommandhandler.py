@@ -15,8 +15,7 @@ class DepositCashCommand:
 
 class DepositCashCommandHandler():
     
-   def __init__(self, databaseService : databaseService, storageClient : Database):
-       self._databaseService = databaseService
+   def __init__(self, storageClient : Database):
        self._storageClient = storageClient       
 
    async def handle(self, request: DepositCashCommand) -> str:
@@ -35,24 +34,23 @@ class DepositCashCommandHandler():
                 raise Exception("duplicate transaction")
            
             entity = TransactionEntity()
-            entity.amount = request.amount
+            entity.netAmount = request.amount
             entity.date = request.date
             entity.description = request.description
             entity.externalId = request.externalId
-            entity.balance = request.balance
+            entity.newBalance = request.balance
             entity.settlementDate = request.settlementDate
             entity.accountId = accountEntity.id
             entity.type = "R"
 
             entity.quantity = 0
-            entity.amount = 0
             entity.perUnitCost = 0
             entity.securityId = None
 
-            accountEntity.fundBalance = accountEntity.fundBalance + entity.balance
+            accountEntity.fundBalance += entity.netAmount
             session.add(entity)
             session.commit()
 
-       return await self._databaseService.process()
+       return await "OK"
 
 

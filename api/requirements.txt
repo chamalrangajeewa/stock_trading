@@ -6,3 +6,4 @@ python-multipart
 mediatr
 sqlalchemy
 pandas
+pytest-asyncio

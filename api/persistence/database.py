@@ -5,8 +5,8 @@ from typing import Callable
 import logging
 
 from sqlalchemy import create_engine, orm
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session
+# from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import Session ,declarative_base
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ Base = declarative_base()
 class Database:
 
     def __init__(self, connectionstring: str) -> None:
-        self._engine = create_engine(connectionstring, echo=True)
+        self._engine = create_engine(connectionstring, echo=False)
         self._session_factory = orm.scoped_session(
             orm.sessionmaker(
                 autocommit=False,
