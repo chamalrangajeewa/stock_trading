@@ -1,11 +1,10 @@
 from datetime import datetime
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from api.persistence.database import Database
 from api.persistence.service import AccountEntity, SecuritySnapShotEntity, TransactionEntity, databaseService
 
-class SalesSecurityCommand(BaseModel):
+class SellSecurityCommand():
     
     # def __init__(self, _externalId : str, _date : datetime, _securityId : str, _quantity : int, _unitPrice : float, _cost : float):
     #  self.externalId = _externalId
@@ -18,22 +17,21 @@ class SalesSecurityCommand(BaseModel):
     securityId : str
     quantity : int
     unitPrice : float
-    commission : float    
+    fees : float    
     externalAccountId : str
     externalId : str
     date : datetime
-    amount : float
+    netAmount : float 
     description : str
-    balance : str
+    newBalance : float
     settlementDate : datetime
 
 class SalesSecurityCommandHandler():
     
-   def __init__(self, databaseService : databaseService, storageClient : Database):
-       self._databaseService = databaseService
+   def __init__(self, storageClient : Database):
        self._storageClient = storageClient       
 
-   async def handle(self, request: SalesSecurityCommand) -> str:
+   async def handle(self, request: SellSecurityCommand) -> str:
        with self._storageClient.session() as _session:
             session : Session = _session
             accountEntity: AccountEntity = session.query(AccountEntity).filter(AccountEntity.externalId == request.externalAccountId).first()
@@ -49,11 +47,11 @@ class SalesSecurityCommandHandler():
                 raise Exception("duplicate transaction")
            
             entity = TransactionEntity()
-            entity.amount = request.amount
+            entity.netAmount = request.netAmount
             entity.date = request.date
             entity.description = request.description
             entity.externalId = request.externalId
-            entity.balance = request.balance
+            entity.newBalance = request.newBalance
             entity.settlementDate = request.settlementDate
             entity.accountId = accountEntity.id
             entity.type = "S"
@@ -61,8 +59,8 @@ class SalesSecurityCommandHandler():
             entity.quantity = request.quantity
             entity.perUnitCost = request.unitPrice
             entity.securityId = request.securityId
-            entity.commission = request.commission
-            accountEntity.fundBalance += entity.amount
+            entity.fees = request.fees
+            accountEntity.fundBalance += entity.netAmount
             session.add(entity)
 
             securitySnapShotEntity: SecuritySnapShotEntity = session.query(SecuritySnapShotEntity).filter(
@@ -72,10 +70,10 @@ class SalesSecurityCommandHandler():
             if not securitySnapShotEntity:
                 raise Exception("no security snapshot found matching the filter")
 
-            securitySnapShotEntity.totalQuantity -= request.quantity
+            securitySnapShotEntity.quantity -= request.quantity
             securitySnapShotEntity.totalRealisedProfit += (request.unitPrice - securitySnapShotEntity.averagePerUnitCost) * request.quantity
-            securitySnapShotEntity.totalSaleCommission += request.commission
-            securitySnapShotEntity.totalSaleIncome += request.amount
+            securitySnapShotEntity.totalSaleFees += request.fees
+            securitySnapShotEntity.totalSaleIncome += request.netAmount
             session.commit()
 
-       return await self._databaseService.process()
+       return "OK"

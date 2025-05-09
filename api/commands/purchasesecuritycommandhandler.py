@@ -1,32 +1,29 @@
 from datetime import datetime
-from pydantic import BaseModel
 
 from api.persistence.database import Database
-from api.persistence.service import SecuritySnapShotEntity, databaseService
-from api.persistence.service import AccountEntity, TransactionEntity, databaseService
+from api.persistence.service import AccountEntity, TransactionEntity,SecuritySnapShotEntity
 from sqlalchemy.orm import Session
 
-class PurchaseSecurityCommand(BaseModel):
+class PurchaseSecurityCommand():
     
     securityId : str
     quantity : int
     unitPrice : float
-    commission : float    
+    fees : float    
     externalAccountId : str
     externalId : str
     date : datetime
-    amount : float
+    netAmount : float 
     description : str
-    balance : str
+    newBalance : float
     settlementDate : datetime
 
 
 class PurchaseSecurityCommandHandler():
 
-   _newAveragePerUnitCost:float = lambda currentAveragePerUnitCost, currentQuantity, quantityPurchased, costOfPurchase : ((currentAveragePerUnitCost * currentQuantity) + costOfPurchase)/(currentQuantity + quantityPurchased)
+   _newAveragePerUnitCost:float = lambda self, currentAveragePerUnitCost, currentQuantity, quantityPurchased, costOfPurchase : ((currentAveragePerUnitCost * currentQuantity) + costOfPurchase)/(currentQuantity + quantityPurchased)
 
-   def __init__(self, databaseService : databaseService, storageClient : Database):
-       self._databaseService = databaseService
+   def __init__(self, storageClient : Database) -> None:
        self._storageClient = storageClient       
 
    async def handle(self, request: PurchaseSecurityCommand) -> str:
@@ -45,11 +42,11 @@ class PurchaseSecurityCommandHandler():
                 raise Exception("duplicate transaction")
            
             entity = TransactionEntity()
-            entity.amount = request.amount
+            entity.netAmount = request.netAmount
             entity.date = request.date
             entity.description = request.description
             entity.externalId = request.externalId
-            entity.balance = request.balance
+            entity.newBalance = request.newBalance
             entity.settlementDate = request.settlementDate
             entity.accountId = accountEntity.id
             entity.type = "B"
@@ -57,8 +54,8 @@ class PurchaseSecurityCommandHandler():
             entity.quantity = request.quantity
             entity.perUnitCost = request.unitPrice
             entity.securityId = request.securityId
-            entity.commission = request.amount-(request.unitPrice * request.quantity)
-            accountEntity.fundBalance = accountEntity.fundBalance - entity.amount
+            entity.fees = request.fees
+            accountEntity.fundBalance = accountEntity.fundBalance - entity.netAmount
             session.add(entity)
 
             securitySnapShotEntity: SecuritySnapShotEntity = session.query(SecuritySnapShotEntity).filter(
@@ -68,24 +65,17 @@ class PurchaseSecurityCommandHandler():
             if not securitySnapShotEntity:
                 securitySnapShotEntity = SecuritySnapShotEntity()
                 securitySnapShotEntity.accountId = accountEntity.id
-                securitySnapShotEntity.securityId = request.securityId
-                securitySnapShotEntity.averagePerUnitCost = self._newAveragePerUnitCost(0, 0, request.quantity, request.amount)
-                securitySnapShotEntity.totalPurchaseCommission += request.commission
-                securitySnapShotEntity.totalPurchaseCost += request.amount
-                securitySnapShotEntity.totalQuantity += request.quantity
-                securitySnapShotEntity.totalRealisedProfit += 0
-                securitySnapShotEntity.totalSaleCommission += 0
-                securitySnapShotEntity.totalSaleIncome += 0  
+                securitySnapShotEntity.securityId = request.securityId              
                 session.add(securitySnapShotEntity)
 
-            securitySnapShotEntity.averagePerUnitCost = self._newAveragePerUnitCost(securitySnapShotEntity.averagePerUnitCost, securitySnapShotEntity.totalQuantity, request.quantity, request.amount)
-            securitySnapShotEntity.totalPurchaseCommission += request.commission
-            securitySnapShotEntity.totalPurchaseCost += request.amount
-            securitySnapShotEntity.totalQuantity += request.quantity
+            securitySnapShotEntity.averagePerUnitCost = self._newAveragePerUnitCost(securitySnapShotEntity.averagePerUnitCost, securitySnapShotEntity.quantity, request.quantity, request.netAmount)
+            securitySnapShotEntity.totalPurchaseFees += request.fees
+            securitySnapShotEntity.totalPurchaseCost += request.netAmount
+            securitySnapShotEntity.quantity += request.quantity
             securitySnapShotEntity.totalRealisedProfit += 0
-            securitySnapShotEntity.totalSaleCommission += 0
+            securitySnapShotEntity.totalSaleFees += 0
             securitySnapShotEntity.totalSaleIncome += 0  
             
             session.commit()
 
-       return await self._databaseService.process()
+       return "OK"

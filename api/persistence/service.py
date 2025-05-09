@@ -51,6 +51,15 @@ class SecurityEntity(Base):
    
 class SecuritySnapShotEntity(Base):
 
+    def __init__(self) -> None:
+        self.averagePerUnitCost = 0
+        self.quantity = 0
+        self.totalPurchaseCost = 0
+        self.totalPurchaseFees = 0
+        self.totalRealisedProfit = 0
+        self.totalSaleFees = 0
+        self.totalSaleIncome = 0
+        
     __tablename__ = "securitysnapshot"
 
     id = Column(Integer, primary_key=True, autoincrement=True, name="id")

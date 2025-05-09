@@ -1,16 +1,15 @@
 from datetime import datetime
-from dependency_injector import containers, providers
 from api.persistence.database import Database
-from api.persistence.service import AccountEntity, TransactionEntity, databaseService
+from api.persistence.service import AccountEntity, TransactionEntity
 from sqlalchemy.orm import Session
 
 class DepositCashCommand:
    externalAccountId : str
    externalId : str
    date : datetime
-   amount : float
+   netAmount : float
    description : str
-   balance : str
+   newBalance : str
    settlementDate : datetime
 
 class DepositCashCommandHandler():
@@ -34,13 +33,14 @@ class DepositCashCommandHandler():
                 raise Exception("duplicate transaction")
            
             entity = TransactionEntity()
-            entity.netAmount = request.amount
+            entity.netAmount = request.netAmount
             entity.date = request.date
             entity.description = request.description
             entity.externalId = request.externalId
-            entity.newBalance = request.balance
+            entity.newBalance = request.newBalance
             entity.settlementDate = request.settlementDate
             entity.accountId = accountEntity.id
+            entity.fees = 0
             entity.type = "R"
 
             entity.quantity = 0
@@ -51,6 +51,6 @@ class DepositCashCommandHandler():
             session.add(entity)
             session.commit()
 
-       return await "OK"
+       return "OK"
 
 
