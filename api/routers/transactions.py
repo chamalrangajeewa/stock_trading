@@ -101,19 +101,14 @@ async def widraw_cash(
     return await mediator.send_async(command)
  
 
-@router.post("/uploadfile/")
-async def create_upload_file(file: UploadFile):
-    return {"filename": file.filename}
-
 @router.post("/files/")
-async def create_file(file: Annotated[bytes, File()]):
+@inject
+async def create_file(
+    mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
+    file: Annotated[bytes, File()]):
     
-    squares = [x**2 for x in range(10)]
     df = pd.read_csv(BytesIO(file))
-    for row in df.itertuples():
-        x, *y = row       
-        _, a, b, c, d, e, f, g, h, i, g, h, i = row
-        CreateRequest(
+    commands = [CreateRequest(
             row.Type, 
             row.Account, 
             row.Amount,
@@ -125,6 +120,9 @@ async def create_file(file: Annotated[bytes, File()]):
             row.Security,
             row.Quantity,
             row.Price,
-            row.Fees)
-        print(row)
-    return df.to_dict()
+            row.Fees) for row in df.itertuples()]
+    
+    for command in commands:
+        await mediator.send_async(command)
+
+    return "OK"

@@ -2,8 +2,9 @@ from datetime import datetime
 from api.persistence.database import Database
 from api.persistence.service import AccountEntity, TransactionEntity
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 
-class DepositCashCommand:
+class DepositCashCommand():
    externalAccountId : str
    externalId : str
    date : datetime

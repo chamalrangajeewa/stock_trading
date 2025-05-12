@@ -3,6 +3,8 @@ from .purchasesecurityrequest import PurchaseSecurityRequest
 from .sellsecurityrequest import SellSecurityRequest
 from .widrawcashrequest import WidrawCashRequest
 
+from ..commands import DepositCashCommand, PurchaseSecurityCommand, SellSecurityCommand, WidrawCashCommand
+
 from datetime import datetime
 from typing import Any
 
@@ -20,58 +22,147 @@ def CreateRequest(
         unitPrice : float,
         fees : float) -> Any:
 
+
         match accountActivityType:
             case "R":
-                command : DepositCashRequest = DepositCashRequest()
-                command.accountId = accountId
-                command.externalTransactionId = externalTransactionId
-                command.transactionDate = transactionDate
-                command.netAmount = netAmount
-                command.description = description
-                command.newBalance = newBalance
-                command.settlementDate = settlementDate
+                request : DepositCashRequest = DepositCashRequest(
+                    accountId = accountId,
+                    externalTransactionId = externalTransactionId,
+                    transactionDate = transactionDate,
+                    netAmount = netAmount,
+                    description = description,
+                    newBalance = newBalance,
+                    settlementDate = settlementDate)
+
+                command : DepositCashCommand = DepositCashCommand()
+                command.externalAccountId = request.accountId
+                command.externalId = request.externalTransactionId
+                command.date = request.transactionDate
+                command.netAmount = request.netAmount
+                command.description = request.description
+                command.newBalance = request.newBalance
+                command.settlementDate = request.settlementDate
                 return command
 
             case "B":
-                command : PurchaseSecurityRequest = PurchaseSecurityRequest()
-                command.accountId = accountId
-                command.externalTransactionId = externalTransactionId
-                command.transactionDate = transactionDate
-                command.netAmount = netAmount
-                command.description = description
-                command.newBalance = newBalance
-                command.settlementDate = settlementDate
-                command.securityId = securityId
-                command.unitPrice = unitPrice
-                command.fees = fees
-                command.quantity = quantity
+                request : PurchaseSecurityRequest = PurchaseSecurityRequest(
+                    accountId = accountId,
+                    externalTransactionId = externalTransactionId,
+                    transactionDate = transactionDate,
+                    netAmount = netAmount,
+                    description = description,
+                    newBalance = newBalance,
+                    settlementDate = settlementDate,
+                    securityId = securityId,
+                    unitPrice = unitPrice,
+                    fees = fees,
+                    quantity = quantity
+                )
+                
+                # command : PurchaseSecurityCommand = PurchaseSecurityCommand(
+                #     accountId = request.accountId,
+                #     externalTransactionId = request.externalTransactionId,
+                #     transactionDate = request.transactionDate,
+                #     netAmount = request.netAmount,
+                #     description = request.description,
+                #     newBalance = request.newBalance,
+                #     settlementDate = request.settlementDate,
+                #     securityId = request.securityId,
+                #     unitPrice = request.unitPrice,
+                #     fees = request.fees,
+                #     quantity = request.quantity
+                # )
+
+                command : PurchaseSecurityCommand = PurchaseSecurityCommand()
+                command.externalAccountId = request.accountId
+                command.externalId = request.externalTransactionId
+                command.date = request.transactionDate
+                command.netAmount = request.netAmount
+                command.description = request.description
+                command.newBalance = request.newBalance
+                command.settlementDate = request.settlementDate
+                command.securityId = request.securityId
+                command.unitPrice = request.unitPrice
+                command.fees = request.fees
+                command.quantity = request.quantity
+
                 return command
 
             case "S":
 
-                command : SellSecurityRequest = SellSecurityRequest()
-                command.accountId = accountId
-                command.externalTransactionId = externalTransactionId
-                command.transactionDate = transactionDate
-                command.netAmount = netAmount
-                command.description = description
-                command.newBalance = newBalance
-                command.settlementDate = settlementDate
-                command.securityId = securityId
-                command.unitPrice = unitPrice
-                command.fees = fees
-                command.quantity = quantity
+                request : SellSecurityRequest = SellSecurityRequest(
+                    accountId = accountId,
+                    externalTransactionId = externalTransactionId,
+                    transactionDate = transactionDate,
+                    netAmount = netAmount,
+                    description = description,
+                    newBalance = newBalance,
+                    settlementDate = settlementDate,
+                    securityId = securityId,
+                    unitPrice = unitPrice,
+                    fees = fees,
+                    quantity = quantity
+                )
+
+                # command : SellSecurityCommand = SellSecurityCommand(
+                #     accountId = request.accountId,
+                #     externalTransactionId = request.externalTransactionId,
+                #     transactionDate = request.transactionDate,
+                #     netAmount = request.netAmount,
+                #     description = request.description,
+                #     newBalance = request.newBalance,
+                #     settlementDate = request.settlementDate,
+                #     securityId = request.securityId,
+                #     unitPrice = request.unitPrice,
+                #     fees = request.fees,
+                #     quantity = request.quantity
+                # )
+                
+                command : SellSecurityCommand = SellSecurityCommand()
+                command.externalAccountId = request.accountId
+                command.externalId = request.externalTransactionId
+                command.date = request.transactionDate
+                command.netAmount = request.netAmount
+                command.description = request.description
+                command.newBalance = request.newBalance
+                command.settlementDate = request.settlementDate
+                command.securityId = request.securityId
+                command.unitPrice = request.unitPrice
+                command.fees = request.fees
+                command.quantity = request.quantity
+
                 return command
 
             case "W":
-                command : WidrawCashRequest = WidrawCashRequest()
-                command.accountId = accountId
-                command.externalTransactionId = externalTransactionId
-                command.transactionDate = transactionDate
-                command.netAmount = netAmount
-                command.description = description
-                command.newBalance = newBalance
-                command.settlementDate = settlementDate
+                request : WidrawCashRequest = WidrawCashRequest(
+                    accountId = accountId,
+                    externalTransactionId = externalTransactionId,
+                    transactionDate = transactionDate,
+                    netAmount = netAmount,
+                    description = description,
+                    newBalance = newBalance,
+                    settlementDate = settlementDate
+                )
+                
+                # command: WidrawCashCommand = WidrawCashCommand(
+                #     accountId = request.accountId,
+                #     externalTransactionId = request.externalTransactionId,
+                #     transactionDate = request.transactionDate,
+                #     netAmount = request.netAmount,
+                #     description = request.description,
+                #     newBalance = request.newBalance,
+                #     settlementDate = request.settlementDate
+                # )
+
+                command: WidrawCashCommand = WidrawCashCommand()              
+                command.externalAccountId = request.accountId
+                command.externalId = request.externalTransactionId
+                command.date = request.transactionDate
+                command.netAmount = request.netAmount
+                command.description = request.description
+                command.newBalance = request.newBalance
+                command.settlementDate = request.settlementDate
+
                 return command
 
             case _:
