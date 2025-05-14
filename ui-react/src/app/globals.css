@@ -24,3 +24,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.grid-cols-15 {
+  grid-template-columns: repeat(15, minmax(80px, 1fr));
+}

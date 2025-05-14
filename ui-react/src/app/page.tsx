@@ -1,103 +1,216 @@
-import Image from "next/image";
+'use client';
+
+import  React from "react";
+import { useState, useEffect } from "react";
+import { AccountSnapshot } from "./accountSnapshot";
+import AccountSnapshotComponent from "./component/accountsnapshot";
+
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+   const accountInitialState : AccountSnapshot = 
+        {
+          "id": "CAS/104948-LI/0",
+          "owner": "Chamal Janindra",
+          "allocationAmount": 10000,
+          "balanceAmount": 400,
+          "netCost" : 0,
+          "marketValue" : 0,
+          "saleFee" : 0,
+          "netProceeds" : 0,
+          "gains": 0,
+          "gainsPerncetage": 0,
+          "sectors": [
+            {
+              "name": "Diversified Financials",
+              "allocationPercentage" : 50,
+              "allocationAmount": 5000,
+              "balanceAmount": 400,
+              "netCost" : 0,
+              "marketValue" : 0,
+              "saleFee" : 0,
+              "netProceeds" : 0,
+              "gains": 0,
+              "gainsPerncetage": 0,
+              "securities": [
+                {
+                  "id": "AAF.N0000",
+                  "name": "ASIA ASSET FINANCE PLC",
+                  "allocationPercentage" : 50,
+                  "allocationAmount": 2500,
+                  "balanceAmount": 400,
+                  "netCost" : 0,
+                  "marketValue" : 0,
+                  "saleFee" : 0,
+                  "netProceeds" : 0,
+                  "gains": 0,
+                  "gainsPerncetage": 0,
+                  "quantity": 2,
+                  "averagePerUnitCost": 2.44,
+                  "livePerUnitCost": 20.44
+                },
+                {
+                  "id": "AAIC.N0000",
+                  "name": "SOFTLOGIC LIFE INSURANCE PLC",
+                  "allocationPercentage" : 50,
+                  "allocationAmount": 2500,
+                  "balanceAmount": 400,
+                  "netCost" : 0,
+                  "marketValue" : 0,
+                  "saleFee" : 0,
+                  "netProceeds" : 0,
+                  "gains": 0,
+                  "gainsPerncetage": 0,
+                  "quantity": 2,
+                  "averagePerUnitCost": 2.44,
+                  "livePerUnitCost": 20.44
+                }
+              ]
+            },
+            {
+              "name": "Materials",
+              "allocationPercentage" : 50,
+              "allocationAmount": 5000,
+              "balanceAmount": 400,
+              "netCost" : 0,
+              "marketValue" : 0,
+              "saleFee" : 0,
+              "netProceeds" : 0,
+              "gains": 0,
+              "gainsPerncetage": 0,
+              "securities": [
+                {
+                  "id": "ABAN.N0000",
+                  "name": "ABANS ELECTRICALS PLC",
+                  "allocationPercentage" : 50,
+                  "allocationAmount": 2500,
+                  "balanceAmount": 400,
+                  "netCost" : 0,
+                  "marketValue" : 0,
+                  "saleFee" : 0,
+                  "netProceeds" : 0,
+                  "gains": 0,
+                  "gainsPerncetage": 0,
+                  "quantity": 2,
+                  "averagePerUnitCost": 2.44,
+                  "livePerUnitCost": 20.44
+                },
+                {
+                  "id": "ABL.N0000",
+                  "name": "AMANA BANK PLC",
+                  "allocationPercentage" : 50,
+                  "allocationAmount": 2500,
+                  "balanceAmount": 400,
+                  "netCost" : 0,
+                  "marketValue" : 0,
+                  "saleFee" : 0,
+                  "netProceeds" : 0,
+                  "gains": 0,
+                  "gainsPerncetage": 0,
+                  "quantity": 2,
+                  "averagePerUnitCost": 2.44,
+                  "livePerUnitCost": 20.44
+                }
+              ]
+            }
+          ]
+        }
+    
+
+
+  const [portfolio, setPortfolio] = useState(accountInitialState);
+
+  useEffect(() => {
+
+    let ignore = false;
+    setPortfolio(accountInitialState);
+
+    async function fetchPortfolio() {
+      const respose = await fetch("https://682383c365ba05803397073e.mockapi.io/api/cse/Account")
+      if(!respose.ok)
+        throw new Error("error loading");  
+
+      const data = await respose.json();
+      
+      if(!ignore)
+        setPortfolio(data);
+    }
+
+    fetchPortfolio();
+
+    return () => {
+      ignore = true;
+    }
+  }, []);
+
+
+  return (
+    <>
+      <div className="p-4 overflow-auto">
+      
+      <AccountSnapshotComponent></AccountSnapshotComponent>
+
+      {/* <div className="grid grid-cols-15 gap-1">
+        <div className="col-span-15 rounded-md bg-amber-400 p-2">Header</div>
+
+        <div className="col-span-3 rounded-md bg-amber-100 p-2 text-center">Sector</div>
+        <div className="rounded-md bg-amber-100 p-2 text-left">30</div>
+        <div className="rounded-md bg-amber-100 p-2 text-center">25</div>
+        <div className="rounded-md bg-amber-100 p-2 text-center">20,000</div>
+        <div className="rounded-md bg-amber-100 p-2 text-center">12000</div>
+        <div className="rounded-md bg-amber-100 p-2 text-center">2300</div>
+        <div className="rounded-md bg-amber-100 p-2 text-center">22000</div>
+        <div className="rounded-md bg-amber-100 p-2 text-center">21000</div>
+        <div className="rounded-md bg-amber-100 p-2 text-center">21000</div>
+        <div className="rounded-md bg-amber-100 p-2 text-center">21000</div>
+        <div className="col-span-3 rounded-md bg-amber-100 p-2 text-center"></div>
+
+        <div className="col-span-3 rounded-md bg-red-200 p-2 text-center">Company (Security)</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">Target</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">actual</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">Amount</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">cost</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">sales fees</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">market value</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">proceeds</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">gains</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">gains %</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">qty</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">average price</div>
+        <div className="rounded-md bg-red-200 p-2 text-center">live price</div>
+
+        <span className="col-span-3 rounded-md bg-blue-100">SAMPATH BANK PLC</span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+
+        <span className="col-span-3 rounded-md bg-blue-100">SAMPATH BANK PLC</span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+        <span className="rounded-md bg-blue-100"></span>
+      </div> */}
+
+      </div>   
+
+    </>  
   );
 }

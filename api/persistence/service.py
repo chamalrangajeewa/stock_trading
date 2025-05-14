@@ -25,14 +25,30 @@ class SectorEntity(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, name="id")
     name = Column(String(100), name="name")
-    fundAllocationPercentage = Column(Integer, name="fund_allocation_percentage", nullable=True, default=0)
     
     securities: Mapped[List["SecurityEntity"]] = relationship(back_populates="sector")
 
     def __repr__(self):
         return f"<Sector(id={self.id}, " \
                f"name=\"{self.name})>"
-    
+
+class SectorSnapShotEntity(Base):
+
+    __tablename__ = "sectorsnapshot"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, name="id")
+    accountId = mapped_column(ForeignKey("account.id"), name="account_id", nullable=False)
+    sectorId = mapped_column(ForeignKey("sector.id"), name="sector_id", nullable=False)
+    fundAllocationPercentage = Column(Integer, name="fund_allocation_percentage", nullable=True, default=0)
+
+
+    def __repr__(self):
+        return f"<SectorSnapShot(id={self.id}, " \
+               f"<accountId(id={self.accountId}, " \
+               f"<sectorId(id={self.sectorId}, " \
+               f"fundAllocationPercentage=\"{self.fundAllocationPercentage})>"
+
+
 class SecurityEntity(Base):
 
     __tablename__ = "security"
@@ -46,8 +62,7 @@ class SecurityEntity(Base):
 
     def __repr__(self):
         return f"<Security(id={self.id}, " \
-               f"name=\"{self.name})>"
-    
+               f"name=\"{self.name})>"  
    
 class SecuritySnapShotEntity(Base):
 
@@ -123,7 +138,6 @@ class databaseService:
     async def process(self) -> str:
         return "saved"
     
-
 class AccountActivityEntity(Base):
 
     __tablename__ = "account_activity"
