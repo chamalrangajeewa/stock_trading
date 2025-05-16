@@ -32,23 +32,23 @@ class ApplicationContainer(containers.DeclarativeContainer):
         config = config
     )
 
-    # persistence_package.container.wire(modules=[".routers.transactions"])
-    persistence_package.container.wire(modules=[".routers.transactions",".routers.account"])
+    persistence_package.container.wire(modules=[".routers.transactions"])
+    # persistence_package.container.wire(modules=[".routers.transactions",".routers.account"])
 
     command_package = providers.Container(
         CommandContainer,
         storage_client = persistence_package.container.database_sqllite
     )
 
-    # command_package.container.wire(modules=[".routers.transactions"])
-    command_package.container.wire(modules=[".routers.transactions",".routers.account"])
+    command_package.container.wire(modules=[".routers.transactions"])
+    # command_package.container.wire(modules=[".routers.transactions",".routers.account"])
 
     route_package = providers.Container(
         RouteContainer
     )
 
-    # route_package.container.wire(modules=[".routers.transactions"])
-    route_package.container.wire(modules=[".routers.transactions",".routers.account"])
+    route_package.container.wire(modules=[".routers.transactions"])
+    # route_package.container.wire(modules=[".routers.transactions",".routers.account"])
 
     __handlertype_handlerFactory_pair = [(DepositCashCommandHandler, command_package.container.depositcashcommand_handler),
          (PurchaseSecurityCommandHandler, command_package.container.purchasesecuritycommand_handler),

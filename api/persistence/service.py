@@ -42,7 +42,8 @@ class SecurityEntity(Base):
 
     id = Column(String(50), primary_key=True, name="id")
     name = Column(String(100), name="name")
-    sectorId = mapped_column(ForeignKey("sector.id"), type_= Integer )
+    sectorId = mapped_column(ForeignKey("sector.id"), name="sector_id", nullable=False)
+
     livePerUnitCost = Column(Float, name="live_per_unit_cost", default=0, nullable=False)
 
     sector: Mapped[SectorEntity] = relationship(back_populates="securities")
@@ -90,8 +91,7 @@ class SecuritySnapShotEntity(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, name="id")
     sectorSnapshotId = mapped_column(ForeignKey("sectorsnapshot.id"), name ="sectorsnapshot_id",  nullable=False)
     securityId = mapped_column(ForeignKey("security.id"), name ="security_id",  nullable=False)
-    # accountId = mapped_column(ForeignKey("account.id"), name="account_id", nullable=False)
-    
+   
     quantity = Column(Integer, name="quantity")   
     averagePerUnitCost = Column(Float, name="average_per_unit_cost")
     fundAllocationPercentage = Column(Integer, name="fund_allocation_percentage", nullable=False, default=0)
@@ -105,7 +105,6 @@ class SecuritySnapShotEntity(Base):
     
     sectorSnapshot: Mapped[SectorSnapShotEntity] = relationship(back_populates="securitySnapshots")
 
-    # account: Mapped[AccountEntity] = relationship(back_populates="securitySnapshots")
     security: Mapped[SecurityEntity] = relationship()
 
     def __repr__(self):

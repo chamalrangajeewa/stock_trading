@@ -2,11 +2,9 @@ import uvicorn
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-# from api import routers, commands, persistence
 from .routers.transactions import router as transactions_router
 from .routers.account import router as account_router
 from .containers import ApplicationContainer
-from dependency_injector.wiring import Provide, inject
 
 tags_metadata = [
     {

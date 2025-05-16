@@ -72,8 +72,8 @@ class ViewDashboardCommandHandler():
             session : Session = _session
 
             accountEntityQuery = select(AccountEntity).options(
-                joinedload(AccountEntity.sectorSnapshots).subqueryload(
-                    SectorSnapShotEntity.securitySnapshots)
+                joinedload(AccountEntity.sectorSnapshots).joinedload(
+                    SectorSnapShotEntity.securitySnapshots).joinedload(SecuritySnapShotEntity.security)
                 ).where(AccountEntity.externalId == request.externalAccountId)
             
             print(accountEntityQuery)
@@ -86,12 +86,19 @@ class ViewDashboardCommandHandler():
             sectors:List[SectorSnapshot] = list()
             
             for sectorSnapshotEntity in accountEntity._t[0].sectorSnapshots:
+                
+                if len(sectorSnapshotEntity.securitySnapshots) == 0:
+                    continue
+
                 sectorEntity = sectorSnapshotEntity.sector
                 
+
                 securities:List[SecuritySnapshot] = list()
 
                 for securitysnapshot in sectorSnapshotEntity.securitySnapshots:
 
+                    g = securitysnapshot.security.livePerUnitCost
+                    
                     security:SecuritySnapshot =  SecuritySnapshot(
                         allocationPercentage = securitysnapshot.fundAllocationPercentage,
                         averagePerUnitCost= securitysnapshot.averagePerUnitCost,
