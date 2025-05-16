@@ -1,8 +1,8 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
 
-from api.persistence.database import Database
-from api.persistence.service import AccountEntity, TransactionEntity, databaseService
+from ..persistence.database import Database
+from ..persistence.service import AccountEntity, TransactionEntity
 
 class WidrawCashCommand:
   
@@ -17,7 +17,6 @@ class WidrawCashCommand:
 class WidrawCashCommandHandler():
 
     def __init__(self, storageClient : Database):
-       self._databaseService = databaseService
        self._storageClient = storageClient          
 
     async def handle(self, request: WidrawCashCommand) -> str:

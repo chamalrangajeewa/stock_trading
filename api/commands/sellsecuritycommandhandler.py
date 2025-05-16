@@ -1,8 +1,9 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 from ..persistence.database import Database
-from ..persistence.service import AccountEntity, SecuritySnapShotEntity, TransactionEntity
+from ..persistence.service import AccountEntity, SectorSnapShotEntity, TransactionEntity,SecuritySnapShotEntity, SecurityEntity
 
 class SellSecurityCommand():
     
@@ -63,8 +64,12 @@ class SellSecurityCommandHandler():
             accountEntity.fundBalance += entity.netAmount
             session.add(entity)
 
+            security = session.execute(select(SecurityEntity).filter(SecurityEntity.id == request.securityId)).first()._t[0]
+            stmt = select(SectorSnapShotEntity).filter(SectorSnapShotEntity.accountId == accountEntity.id).filter(SectorSnapShotEntity.sectorId == security.sectorId)
+            sectorSnapshotEntity = session.execute(stmt).first()._t[0]
+
             securitySnapShotEntity: SecuritySnapShotEntity = session.query(SecuritySnapShotEntity).filter(
-                SecuritySnapShotEntity.accountId == accountEntity.id,
+                SecuritySnapShotEntity.sectorSnapshotId == sectorSnapshotEntity.id,
                 SecuritySnapShotEntity.securityId == request.securityId).first()
             
             if not securitySnapShotEntity:

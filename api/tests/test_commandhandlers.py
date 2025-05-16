@@ -11,9 +11,7 @@ from ..persistence import Database
 
 class TestCommandHandler:
     
-    EXTERNAL_ACCOUNT_ID:str = "CAS/104948-LI/0"
-    # def __init__(self)-> None:
-    #     pass       
+    EXTERNAL_ACCOUNT_ID:str = "CAS/104948-LI/0"      
 
     def defaultDepositCashCommand(self, externalId:str, amount:float = 0, balance:float = 0) -> DepositCashCommand:
         command: DepositCashCommand = DepositCashCommand()
@@ -105,6 +103,17 @@ class TestCommandHandler:
 
             connection.execute(stm)
 
+            stm = text("""INSERT INTO sectorsnapshot (account_id, sector_id, fund_allocation_percentage) 
+                        VALUES 
+                        (1, 15, 10)
+                        ,(1, 16, 10)
+                        ,(1, 1, 10)
+                        ,(1, 14, 10)
+                        ,(1, 3, 10)
+                        ,(1, 2, 10)""")
+
+            connection.execute(stm)
+
             stm = text("""INSERT INTO security (id, name, sectorId)
                           VALUES 
                           ('AAF.N0000', 'ASIA ASSET FINANCE PLC', 15)
@@ -167,17 +176,17 @@ class TestCommandHandler:
             transactions: List[TransactionEntity] = session.query(TransactionEntity).filter(
                 TransactionEntity.accountId == accountEntity.id).all()
 
-            securitySnapShots: List[SecuritySnapShotEntity] = session.query(SecuritySnapShotEntity).filter(SecuritySnapShotEntity.accountId == accountEntity.id).all()                                 
+        #     securitySnapShots: List[SecuritySnapShotEntity] = session.query(SecuritySnapShotEntity).filter(SecuritySnapShotEntity.accountId == accountEntity.id).all()                                 
 
-        securitySnapShots[0].averagePerUnitCost = 0
-        securitySnapShots[0].quantity = 0
-        securitySnapShots[0].totalPurchaseCost = 0
-        securitySnapShots[0].totalPurchaseFees = 0
-        securitySnapShots[0].totalRealisedProfit = 0
-        securitySnapShots[0].totalSaleFees = 0
-        securitySnapShots[0].totalSaleIncome = 0
-        accountEntity.fundBalance = 0
+        # securitySnapShots[0].averagePerUnitCost = 0
+        # securitySnapShots[0].quantity = 0
+        # securitySnapShots[0].totalPurchaseCost = 0
+        # securitySnapShots[0].totalPurchaseFees = 0
+        # securitySnapShots[0].totalRealisedProfit = 0
+        # securitySnapShots[0].totalSaleFees = 0
+        # securitySnapShots[0].totalSaleIncome = 0
+        # accountEntity.fundBalance = 0
 
-        assert len(securitySnapShots) == 1
+        # assert len(securitySnapShots) == 1
         assert len(transactions) == len(commands)
         

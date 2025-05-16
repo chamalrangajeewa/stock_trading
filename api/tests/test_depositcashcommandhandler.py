@@ -50,6 +50,17 @@ class TestDepositCashCommandHandler:
 
             connection.execute(stm)
 
+            stm = text("""INSERT INTO sectorsnapshot (account_id, sector_id, fund_allocation_percentage) 
+                        VALUES 
+                        (1, 15, 10)
+                        ,(1, 16, 10)
+                        ,(1, 1, 10)
+                        ,(1, 14, 10)
+                        ,(1, 3, 10)
+                        ,(1, 2, 10)""")
+
+            connection.execute(stm)
+
             stm = text("""INSERT INTO security (id, name, sectorId)
                           VALUES 
                           ('AAF.N0000', 'ASIA ASSET FINANCE PLC', 15)

@@ -7,7 +7,7 @@ import pandas as pd
 from io import BytesIO
 
 from .utility import CreateRequest
-from ..commands import WidrawCashCommand,DepositCashCommand,PurchaseSecurityCommand,SellSecurityCommand
+from ..commands import WidrawCashCommand, DepositCashCommand, PurchaseSecurityCommand, SellSecurityCommand
 from .depositcashrequest import DepositCashRequest
 from .widrawcashrequest import WidrawCashRequest
 from .purchasesecurityrequest import PurchaseSecurityRequest
@@ -15,13 +15,13 @@ from .sellsecurityrequest import SellSecurityRequest
 from ..containers import ApplicationContainer
 
 router = APIRouter(
-    prefix="/transactions",
+    prefix="/transaction",
     responses={404: {"description": "Not found"}},
 )
 
 @router.post("/cashIn", tags=["transactions"])
 @inject
-async def deposit_cash(
+async def cash_in(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
     payload : DepositCashRequest):
     
@@ -83,9 +83,9 @@ async def sell_security(
     return await mediator.send_async(command)
 
 
-@router.post("/cashOut", tags=["transactions"])
+@router.post("/cashout", tags=["transactions"])
 @inject
-async def widraw_cash(
+async def cash_out(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
     payload : WidrawCashRequest):
  
@@ -101,9 +101,9 @@ async def widraw_cash(
     return await mediator.send_async(command)
  
 
-@router.post("/files/")
+@router.post("/bulkimport/")
 @inject
-async def create_file(
+async def bulk_import(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
     file: Annotated[bytes, File()]):
     

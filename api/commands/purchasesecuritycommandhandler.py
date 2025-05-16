@@ -1,8 +1,9 @@
 from datetime import datetime
 
 from api.persistence.database import Database
-from api.persistence.service import AccountEntity, TransactionEntity,SecuritySnapShotEntity
+from api.persistence.service import AccountEntity, SectorSnapShotEntity, TransactionEntity,SecuritySnapShotEntity, SecurityEntity
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 class PurchaseSecurityCommand():
     
@@ -58,13 +59,17 @@ class PurchaseSecurityCommandHandler():
             accountEntity.fundBalance -= entity.netAmount
             session.add(entity)
 
+            security = session.execute(select(SecurityEntity).filter(SecurityEntity.id == request.securityId)).first()._t[0]
+            stmt = select(SectorSnapShotEntity).filter(SectorSnapShotEntity.accountId == accountEntity.id).filter(SectorSnapShotEntity.sectorId == security.sectorId)
+            sectorSnapshotEntity = session.execute(stmt).first()._t[0]
+
             securitySnapShotEntity: SecuritySnapShotEntity = session.query(SecuritySnapShotEntity).filter(
-                SecuritySnapShotEntity.accountId == accountEntity.id,
+                SecuritySnapShotEntity.sectorSnapshotId == sectorSnapshotEntity.id,
                 SecuritySnapShotEntity.securityId == request.securityId).first()
             
             if not securitySnapShotEntity:
                 securitySnapShotEntity = SecuritySnapShotEntity()
-                securitySnapShotEntity.accountId = accountEntity.id
+                securitySnapShotEntity.sectorSnapshotId = sectorSnapshotEntity.id
                 securitySnapShotEntity.securityId = request.securityId              
                 session.add(securitySnapShotEntity)
 

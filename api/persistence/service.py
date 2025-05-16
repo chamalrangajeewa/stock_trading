@@ -15,8 +15,12 @@ class AccountEntity(Base):
     fundBalance = Column(Float, name="fund_balance")
     investment = Column(Float, name="investment")
 
+    sectorSnapshots: Mapped[List["SectorSnapShotEntity"]] = relationship(back_populates="account")
+    
     def __repr__(self):
         return f"<Account(id={self.id}, " \
+               f"<fundBalance(id={self.fundBalance}, " \
+               f"<investment(id={self.investment}, " \
                f"externalId=\"{self.externalId})>"
 
 class SectorEntity(Base):
@@ -32,23 +36,6 @@ class SectorEntity(Base):
         return f"<Sector(id={self.id}, " \
                f"name=\"{self.name})>"
 
-class SectorSnapShotEntity(Base):
-
-    __tablename__ = "sectorsnapshot"
-
-    id = Column(Integer, primary_key=True, autoincrement=True, name="id")
-    accountId = mapped_column(ForeignKey("account.id"), name="account_id", nullable=False)
-    sectorId = mapped_column(ForeignKey("sector.id"), name="sector_id", nullable=False)
-    fundAllocationPercentage = Column(Integer, name="fund_allocation_percentage", nullable=True, default=0)
-
-
-    def __repr__(self):
-        return f"<SectorSnapShot(id={self.id}, " \
-               f"<accountId(id={self.accountId}, " \
-               f"<sectorId(id={self.sectorId}, " \
-               f"fundAllocationPercentage=\"{self.fundAllocationPercentage})>"
-
-
 class SecurityEntity(Base):
 
     __tablename__ = "security"
@@ -56,14 +43,37 @@ class SecurityEntity(Base):
     id = Column(String(50), primary_key=True, name="id")
     name = Column(String(100), name="name")
     sectorId = mapped_column(ForeignKey("sector.id"), type_= Integer )
+    livePerUnitCost = Column(Float, name="live_per_unit_cost")
 
     sector: Mapped[SectorEntity] = relationship(back_populates="securities")
-    transactions: Mapped[List["TransactionEntity"]] = relationship(back_populates="security")
 
     def __repr__(self):
         return f"<Security(id={self.id}, " \
-               f"name=\"{self.name})>"  
-   
+               f"<name(id={self.name}, " \
+               f"<sectorId(id={self.sectorId}, " \
+               f"livePerUnitCost=\"{self.livePerUnitCost})>"  
+
+
+class SectorSnapShotEntity(Base):
+
+    __tablename__ = "sectorsnapshot"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, name="id")
+    accountId = mapped_column(ForeignKey("account.id"), name="account_id", nullable=False)
+    sectorId = mapped_column(ForeignKey("sector.id"), name="sector_id", nullable=False)
+    fundAllocationPercentage = Column(Integer, name="fund_allocation_percentage", nullable=False, default=0)
+
+    sector: Mapped[SectorEntity] = relationship()
+    account: Mapped[AccountEntity] = relationship(back_populates="sectorSnapshots")
+
+    securitySnapshots : Mapped[List["SecuritySnapShotEntity"]] = relationship(back_populates="sectorSnapshot")
+
+    def __repr__(self):
+        return f"<SectorSnapshot(id={self.id}, " \
+               f"<accountId(id={self.accountId}, " \
+               f"<sectorId(id={self.sectorId}, " \
+               f"fundAllocationPercentage=\"{self.fundAllocationPercentage})>"
+
 class SecuritySnapShotEntity(Base):
 
     def __init__(self) -> None:
@@ -78,25 +88,38 @@ class SecuritySnapShotEntity(Base):
     __tablename__ = "securitysnapshot"
 
     id = Column(Integer, primary_key=True, autoincrement=True, name="id")
+    sectorSnapshotId = mapped_column(ForeignKey("sectorsnapshot.id"), name ="sectorsnapshot_id",  nullable=False)
     securityId = mapped_column(ForeignKey("security.id"), name ="security_id",  nullable=False)
-    accountId = mapped_column(ForeignKey("account.id"), name="account_id", nullable=False)
+    # accountId = mapped_column(ForeignKey("account.id"), name="account_id", nullable=False)
     
-    quantity = Column(Integer, name="quantity")
-    livePerUnitCost = Column(Float, name="live_per_unit_cost")   
+    quantity = Column(Integer, name="quantity")   
     averagePerUnitCost = Column(Float, name="average_per_unit_cost")
-
+    fundAllocationPercentage = Column(Integer, name="fund_allocation_percentage", nullable=False, default=0)
+    
     totalPurchaseCost = Column(Float, name="total_purchase_cost")
     totalPurchaseFees = Column(Float, name="total_purchase_fees")
 
     totalSaleIncome = Column(Float, name="total_sales_income")
     totalSaleFees = Column(Float, name="total_sale_fees")
     totalRealisedProfit = Column(Float, name="total_realised_profit")
-
-    fundAllocationPercentage = Column(Integer, name="fund_allocation_percentage", nullable=True, default=0)
     
+    sectorSnapshot: Mapped[SectorSnapShotEntity] = relationship(back_populates="securitySnapshots")
+
+    # account: Mapped[AccountEntity] = relationship(back_populates="securitySnapshots")
+    security: Mapped[SecurityEntity] = relationship()
+
     def __repr__(self):
         return f"<SecuritySnapShotEntity(id={self.id}, " \
-               f"securityId=\"{self.securityId})>"
+               f"<quantity(id={self.quantity}, " \
+               f"<securityId(id={self.securityId}, " \
+               f"<averagePerUnitCost(id={self.averagePerUnitCost}, " \
+               f"<fundAllocationPercentage(id={self.fundAllocationPercentage}, " \
+               f"<totalPurchaseCost(id={self.totalPurchaseCost}, " \
+               f"<totalPurchaseFees(id={self.totalPurchaseFees}, " \
+               f"<totalSaleIncome(id={self.totalSaleIncome}, " \
+               f"<totalSaleFees(id={self.totalSaleFees}, " \
+               f"<totalRealisedProfit(id={self.totalRealisedProfit}, " \
+               f"sectorSnapshotId=\"{self.sectorSnapshotId})>"
     
 class TransactionEntity(Base):
 
@@ -117,7 +140,7 @@ class TransactionEntity(Base):
     perUnitCost = Column(Float, name="per_unit_cost", nullable=True, default=0)
     quantity = Column(Integer, name="quantity", nullable=True, default = 0)
 
-    security: Mapped[SecurityEntity] = relationship(back_populates="transactions")
+    security: Mapped[SecurityEntity] = relationship()
 
     def __repr__(self):
         return f"<Transaction(id={self.id}, " \
@@ -133,10 +156,6 @@ class TransactionEntity(Base):
                f"quantity=\"{self.quantity}\", " \
                f"securityId=\"{self.securityId}\", " \
                f"fees={self.fees})>"
-
-class databaseService:
-    async def process(self) -> str:
-        return "saved"
     
 class AccountActivityEntity(Base):
 
