@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 
 from ..persistence.service import AccountEntity, SecuritySnapShotEntity, TransactionEntity
-from ..commands import DepositCashCommandHandler, DepositCashCommand,WidrawCashCommandHandler, WidrawCashCommand, PurchaseSecurityCommandHandler,PurchaseSecurityCommand, SellSecurityCommandHandler, SellSecurityCommand
+from ..commands import DepositCashCommandHandler, DepositCashCommand, WidrawCashCommandHandler, WidrawCashCommand, PurchaseSecurityCommandHandler,PurchaseSecurityCommand, SellSecurityCommandHandler, SellSecurityCommand, ViewDashboardCommandHandler, ViewDashboardCashCommand
 from ..persistence import Database
 
 class TestCommandHandler:
@@ -189,4 +189,41 @@ class TestCommandHandler:
 
         # assert len(securitySnapShots) == 1
         assert len(transactions) == len(commands)
+
+
+    @pytest.mark.asyncio(loop_scope="function")
+    async def test_viewdashboardcommand(self, handlers: dict, database: Database) -> None:
         
+        commands = [
+            self.defaultDepositCashCommand(1,amount=10000), 
+            self.defaultPurchaseSecurityCommand(2,'AAF.N0000', unitPrice=10, quantity=100, balance=9000),
+            self.defaultSellSecurityCommand(3,'AAF.N0000', unitPrice=15, quantity=100, balance=9000),
+            self.defaultWidrawCashCommand(4,amount=1000), 
+            ]
+
+        for x in commands:
+            await handlers[x.__class__.__name__].handle(x)
+        
+
+        with database.session() as _session:
+            session : Session = _session
+            
+            accountEntity: AccountEntity = session.query(AccountEntity).filter(AccountEntity.externalId == self.EXTERNAL_ACCOUNT_ID).first()                                 
+
+            transactions: List[TransactionEntity] = session.query(TransactionEntity).filter(
+                TransactionEntity.accountId == accountEntity.id).all()
+
+        #     securitySnapShots: List[SecuritySnapShotEntity] = session.query(SecuritySnapShotEntity).filter(SecuritySnapShotEntity.accountId == accountEntity.id).all()                                 
+
+        # securitySnapShots[0].averagePerUnitCost = 0
+        # securitySnapShots[0].quantity = 0
+        # securitySnapShots[0].totalPurchaseCost = 0
+        # securitySnapShots[0].totalPurchaseFees = 0
+        # securitySnapShots[0].totalRealisedProfit = 0
+        # securitySnapShots[0].totalSaleFees = 0
+        # securitySnapShots[0].totalSaleIncome = 0
+        # accountEntity.fundBalance = 0
+
+        # assert len(securitySnapShots) == 1
+        assert len(transactions) == len(commands)
+            

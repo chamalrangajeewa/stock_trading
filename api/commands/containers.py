@@ -3,6 +3,7 @@ from .depositcashcommandhandler import DepositCashCommandHandler
 from .purchasesecuritycommandhandler import PurchaseSecurityCommandHandler
 from .sellsecuritycommandhandler import SellSecurityCommandHandler
 from .widrawcashcommandhandler import WidrawCashCommandHandler
+from .viewdashboardcommandhandler import ViewDashboardCommandHandler
     
 class Container(containers.DeclarativeContainer):
 
@@ -25,5 +26,10 @@ class Container(containers.DeclarativeContainer):
 
     widrawcashcommand_handler = providers.Factory(
         WidrawCashCommandHandler,
+        storageClient = storage_client 
+    )
+
+    viewdashboardcommand_handler = providers.Factory(
+        ViewDashboardCommandHandler,
         storageClient = storage_client 
     )

@@ -43,7 +43,7 @@ class SecurityEntity(Base):
     id = Column(String(50), primary_key=True, name="id")
     name = Column(String(100), name="name")
     sectorId = mapped_column(ForeignKey("sector.id"), type_= Integer )
-    livePerUnitCost = Column(Float, name="live_per_unit_cost")
+    livePerUnitCost = Column(Float, name="live_per_unit_cost", default=0, nullable=False)
 
     sector: Mapped[SectorEntity] = relationship(back_populates="securities")
 

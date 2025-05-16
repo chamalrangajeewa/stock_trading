@@ -9,5 +9,5 @@ class Container(containers.DeclarativeContainer):
     
     database_sqllite = providers.Factory(
         Database,
-        connectionstring = "sqlite:///./stock_trading.db"
+        connectionstring = "sqlite:///./stock_trading_c.db"
     )

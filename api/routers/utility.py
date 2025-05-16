@@ -47,7 +47,7 @@ def CreateRequest(
             case "B":
                 request : PurchaseSecurityRequest = PurchaseSecurityRequest(
                     accountId = accountId,
-                    externalTransactionId = externalTransactionId,
+                    externalTransactionId = str(externalTransactionId),
                     transactionDate = transactionDate,
                     netAmount = netAmount,
                     description = description,
@@ -59,20 +59,6 @@ def CreateRequest(
                     quantity = quantity
                 )
                 
-                # command : PurchaseSecurityCommand = PurchaseSecurityCommand(
-                #     accountId = request.accountId,
-                #     externalTransactionId = request.externalTransactionId,
-                #     transactionDate = request.transactionDate,
-                #     netAmount = request.netAmount,
-                #     description = request.description,
-                #     newBalance = request.newBalance,
-                #     settlementDate = request.settlementDate,
-                #     securityId = request.securityId,
-                #     unitPrice = request.unitPrice,
-                #     fees = request.fees,
-                #     quantity = request.quantity
-                # )
-
                 command : PurchaseSecurityCommand = PurchaseSecurityCommand()
                 command.externalAccountId = request.accountId
                 command.externalId = request.externalTransactionId
@@ -92,7 +78,7 @@ def CreateRequest(
 
                 request : SellSecurityRequest = SellSecurityRequest(
                     accountId = accountId,
-                    externalTransactionId = externalTransactionId,
+                    externalTransactionId = str(externalTransactionId),
                     transactionDate = transactionDate,
                     netAmount = netAmount,
                     description = description,

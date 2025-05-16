@@ -1,11 +1,61 @@
 from datetime import datetime
+from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload,subqueryload
 
 from ..persistence.database import Database
-from ..persistence.service import AccountEntity, SecurityEntity, SecuritySnapShotEntity, TransactionEntity
-from ..routers import AccountSnapshot, SectorSnapshot, SecuritySnapshot
+from ..persistence.service import AccountEntity, SectorSnapShotEntity, SecurityEntity, SecuritySnapShotEntity, TransactionEntity
+
+from typing import List
+from pydantic import BaseModel
+
+class SecuritySnapshot(BaseModel):
+
+    name : str
+    id : str    
+    allocationPercentage: float
+    allocationAmount : float
+    balanceAmount : float
+    netCost : float
+    marketValue : float
+    saleFee : float
+    netProceeds : float
+    gains: float
+    gainsPerncetage:float
+    quantity : float
+    averagePerUnitCost : float
+    livePerUnitCost : float
+
+
+class SectorSnapshot(BaseModel):
+
+    name : str
+    securities : List[SecuritySnapshot] = list()
+    allocationPercentage: float
+    allocationAmount : float
+    balanceAmount : float
+    netCost : float
+    marketValue : float
+    saleFee : float
+    netProceeds : float
+    gains: float
+    gainsPerncetage:float
+
+
+class AccountSnapshot(BaseModel):
+    
+    id : str
+    owner : str
+    allocationAmount : float
+    balanceAmount : float
+    netCost : float
+    marketValue : float
+    saleFee : float
+    netProceeds : float
+    gains: float
+    gainsPerncetage:float
+    sectors : List[SectorSnapshot] = list()
 
 class ViewDashboardCashCommand:
   
@@ -21,63 +71,74 @@ class ViewDashboardCommandHandler():
        with self._storageClient.session() as _session:
             session : Session = _session
 
-            accountEntity: AccountEntity = session.query(AccountEntity).filter(AccountEntity.externalId == request.externalAccountId).first()
-          
+            accountEntityQuery = select(AccountEntity).options(
+                joinedload(AccountEntity.sectorSnapshots).subqueryload(
+                    SectorSnapShotEntity.securitySnapshots)
+                ).where(AccountEntity.externalId == request.externalAccountId)
+            
+            print(accountEntityQuery)
+
+            accountEntity = session.execute(accountEntityQuery).first()
+            
             if not accountEntity:
                 raise Exception("account not found")
-
-
-            stmt = select(SecurityEntity, SecuritySnapShotEntity).join_from(SecurityEntity, SecuritySnapShotEntity, SecurityEntity.id == SecuritySnapShotEntity.securityId).where(SecuritySnapShotEntity.accountId == accountEntity.id)
-            print(stmt)    
-            security_securitySnapshot_Tuple = session.execute(stmt).all()
-
-            for o in security_securitySnapshot_Tuple:
-                x, y = o.t[0].sectorId
-
-            result: AccountSnapshot = AccountSnapshot()
-
-            result.id = accountEntity.id
-            result.allocationAmount = accountEntity.investment
-            result.balanceAmount = accountEntity.fundBalance
-
-            h = filter(lambda o: o.t[0].sectorId == 2, security_securitySnapshot_Tuple)
+        
+            sectors:List[SectorSnapshot] = list()
             
-            for sectorSnapshotEntity in accountEntity.sectorSnapshots:
+            for sectorSnapshotEntity in accountEntity._t[0].sectorSnapshots:
                 sectorEntity = sectorSnapshotEntity.sector
-                pair = filter(lambda o: o.t[0].sectorId == sectorEntity.id, security_securitySnapshot_Tuple)
                 
+                securities:List[SecuritySnapshot] = list()
+
+                for securitysnapshot in sectorSnapshotEntity.securitySnapshots:
+
+                    security:SecuritySnapshot =  SecuritySnapshot(
+                        allocationPercentage = securitysnapshot.fundAllocationPercentage,
+                        averagePerUnitCost= securitysnapshot.averagePerUnitCost,
+                        livePerUnitCost= securitysnapshot.security.livePerUnitCost,
+                        quantity = securitysnapshot.quantity,
+                        allocationAmount=0,
+                        balanceAmount=0,
+                        gains=0,
+                        gainsPerncetage=0,
+                        marketValue=0,
+                        netCost=0,
+                        saleFee=0,
+                        netProceeds=0,
+                        id=securitysnapshot.securityId,
+                        name=securitysnapshot.security.name)
+                    
+                    securities.append(security)
+                    
                 sector:SectorSnapshot = SectorSnapshot(
                     name = sectorEntity.name,
-                    allocationPercentage = sectorSnapshotEntity.fundAllocationPercentage                     
+                    allocationPercentage = sectorSnapshotEntity.fundAllocationPercentage,
+                    allocationAmount=0,
+                    balanceAmount=0,
+                    gains=0,
+                    gainsPerncetage=0,
+                    marketValue=0,
+                    netCost=0,
+                    netProceeds=0,
+                    saleFee=0,
+                    securities= securities                                   
                 )
 
+                sectors.append(sector)
+                
 
-                result.sectors.append(sector)
-
-
-            entity: TransactionEntity = session.query(TransactionEntity).filter(
-                TransactionEntity.accountId == accountEntity.id,
-                TransactionEntity.externalId == request.externalId).first()
+            result: AccountSnapshot = AccountSnapshot(
+                id = accountEntity._t[0].externalId,
+                allocationAmount = accountEntity._t[0].investment,
+                balanceAmount=accountEntity._t[0].fundBalance,
+                gains=0,
+                gainsPerncetage=0,
+                marketValue=0,
+                netCost=0,
+                netProceeds=0,
+                owner="chaaml",
+                saleFee=0,
+                sectors= sectors            
+                )
             
-            if entity:
-                raise Exception("duplicate transaction")
-           
-            entity = TransactionEntity()
-            entity.netAmount = request.netAmount
-            entity.date = request.date
-            entity.description = request.description
-            entity.externalId = request.externalId
-            entity.newBalance = request.newBalance
-            entity.settlementDate = request.settlementDate
-            entity.accountId = accountEntity.id
-            entity.type = "D"
-
-            entity.quantity = 0
-            entity.perUnitCost = 0
-            entity.securityId = None
-
-            accountEntity.fundBalance -= entity.netAmount
-            session.add(entity)
-            session.commit()
-
-       return result
+            return result

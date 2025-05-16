@@ -1,4 +1,4 @@
 {
     "version": "1.0.0",
-    "db" : {"url": "sqlite:///./webapp.db"} 
+    "db" : {"url": "sqlite:///./stock_trading.db"} 
 }

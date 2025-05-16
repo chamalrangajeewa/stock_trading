@@ -3,3 +3,4 @@ from .depositcashcommandhandler import DepositCashCommandHandler, DepositCashCom
 from .purchasesecuritycommandhandler import PurchaseSecurityCommandHandler, PurchaseSecurityCommand
 from .sellsecuritycommandhandler import SellSecurityCommandHandler, SellSecurityCommand
 from .widrawcashcommandhandler import WidrawCashCommandHandler, WidrawCashCommand
+from .viewdashboardcommandhandler import ViewDashboardCommandHandler, ViewDashboardCashCommand

@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # from api import routers, commands, persistence
 from .routers.transactions import router as transactions_router
+from .routers.account import router as account_router
 from .containers import ApplicationContainer
 from dependency_injector.wiring import Provide, inject
 
@@ -53,6 +54,7 @@ def create_app() -> FastAPI:
 
     app.container = container
     app.include_router(transactions_router)
+    app.include_router(account_router)
 
     origins = [
     "http://localhost:3000",
