@@ -8,21 +8,25 @@ export default function SecuritySnapshotComponent({ security }) {
   const initialState : SecuritySnapshot = security;
   const [o, setSecurity] = useState(initialState);
 
+  if (!security) {
+    return(<></>);
+  }
+
   return (
     <>
         <span className="col-span-3 rounded-md bg-blue-100">{o.name}({o.id})</span>
-        <span className="rounded-md bg-blue-100">{o.allocationPercentage}</span>
-        <span className="rounded-md bg-blue-100">{o.allocationAmount}</span>
-        <span className="rounded-md bg-blue-100">{o.balanceAmount}</span>
-        <span className="rounded-md bg-blue-100">{o.netCost}</span>
-        <span className="rounded-md bg-blue-100">{o.marketValue}</span>
-        <span className="rounded-md bg-blue-100">{o.saleFee}</span>
-        <span className="rounded-md bg-blue-100">{o.netProceeds}</span>
-        <span className="rounded-md bg-blue-100">{o.gains}</span>
-        <span className="rounded-md bg-blue-100">{o.allocationPercentage}</span>
-        <span className="rounded-md bg-blue-100">{o.quantity}</span>
-        <span className="rounded-md bg-blue-100">{o.averagePerUnitCost}</span>
-        <span className="rounded-md bg-blue-100">{o.livePerUnitCost}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-center">{o.allocationPercentage}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.allocationAmount.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.balanceAmount.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.netCost.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.marketValue.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.saleFee.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.netProceeds.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.gains.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.gainsPerncetage.toFixed()}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.quantity}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.averagePerUnitCost}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.livePerUnitCost}</span>
     </>  
   );
 }

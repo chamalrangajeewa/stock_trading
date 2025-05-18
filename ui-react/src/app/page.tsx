@@ -5,135 +5,73 @@ import { useState, useEffect } from "react";
 import { AccountSnapshot } from "./accountSnapshot";
 import AccountSnapshotComponent from "./component/accountsnapshot";
 
+function hydradeCalculatedValues(account : AccountSnapshot)
+{
+      if (!account) {
+        return null
+      }
+
+      for (let index = 0; index < account.sectors.length; index++) {
+          const sector = account.sectors[index];
+          sector.allocationAmount = account.allocationAmount * sector.allocationPercentage * 0.01;
+      
+          for (let i = 0; i < sector.securities.length; i++) {
+            const security = sector.securities[i];
+
+            security.allocationAmount = sector.allocationAmount * security.allocationPercentage * 0.01;
+            security.netCost = security.averagePerUnitCost * security.quantity;
+            security.marketValue = security.livePerUnitCost * security.quantity;
+            security.balanceAmount = security.allocationAmount - security.netCost;
+            security.saleFee = security.marketValue * 0.0112;
+            security.netProceeds = security.marketValue - security.saleFee;
+            security.gains = security.marketValue - security.saleFee - security.netCost;
+            security.gainsPerncetage = (security.gains / security.netCost) * 100;        
+          }
+
+          sector.marketValue = sector.securities.map(o => o.marketValue).reduce((a,b) => a + b, 0);
+          sector.saleFee = sector.securities.map(o => o.saleFee).reduce((a,b) => a + b, 0);
+          sector.netCost = sector.securities.map(o => o.netCost).reduce((a,b) => a + b, 0);
+          sector.netProceeds = sector.securities.map(o => o.netProceeds).reduce((a,b) => a + b, 0);
+          sector.gains = sector.securities.map(o => o.gains).reduce((a,b) => a + b, 0);
+          sector.gainsPerncetage = (sector.gains / sector.netCost) * 100; 
+          sector.balanceAmount = sector.allocationAmount - sector.netCost;
+        }
+
+          account.marketValue = account.sectors.map(o => o.marketValue).reduce((a,b) => a + b, 0);
+          account.saleFee = account.sectors.map(o => o.saleFee).reduce((a,b) => a + b, 0);
+          account.netCost = account.sectors.map(o => o.netCost).reduce((a,b) => a + b, 0);
+          account.netProceeds = account.sectors.map(o => o.netProceeds).reduce((a,b) => a + b, 0);
+          account.gains = account.sectors.map(o => o.gains).reduce((a,b) => a + b, 0);
+          account.gainsPerncetage = (account.gains / account.netCost) * 100; 
+          account.balanceAmount = account.allocationAmount - account.netCost;
+
+          return account;
+}
+
 
 export default function Home() {
 
-   const accountInitialState : AccountSnapshot = 
-        {
-          "id": "CAS/104948-LI/0",
-          "owner": "Chamal Janindra",
-          "allocationAmount": 10000,
-          "balanceAmount": 400,
-          "netCost" : 0,
-          "marketValue" : 0,
-          "saleFee" : 0,
-          "netProceeds" : 0,
-          "gains": 0,
-          "gainsPerncetage": 0,
-          "sectors": [
-            {
-              "name": "Diversified Financials",
-              "allocationPercentage" : 50,
-              "allocationAmount": 5000,
-              "balanceAmount": 400,
-              "netCost" : 0,
-              "marketValue" : 0,
-              "saleFee" : 0,
-              "netProceeds" : 0,
-              "gains": 0,
-              "gainsPerncetage": 0,
-              "securities": [
-                {
-                  "id": "AAF.N0000",
-                  "name": "ASIA ASSET FINANCE PLC",
-                  "allocationPercentage" : 50,
-                  "allocationAmount": 2500,
-                  "balanceAmount": 400,
-                  "netCost" : 0,
-                  "marketValue" : 0,
-                  "saleFee" : 0,
-                  "netProceeds" : 0,
-                  "gains": 0,
-                  "gainsPerncetage": 0,
-                  "quantity": 2,
-                  "averagePerUnitCost": 2.44,
-                  "livePerUnitCost": 20.44
-                },
-                {
-                  "id": "AAIC.N0000",
-                  "name": "SOFTLOGIC LIFE INSURANCE PLC",
-                  "allocationPercentage" : 50,
-                  "allocationAmount": 2500,
-                  "balanceAmount": 400,
-                  "netCost" : 0,
-                  "marketValue" : 0,
-                  "saleFee" : 0,
-                  "netProceeds" : 0,
-                  "gains": 0,
-                  "gainsPerncetage": 0,
-                  "quantity": 2,
-                  "averagePerUnitCost": 2.44,
-                  "livePerUnitCost": 20.44
-                }
-              ]
-            },
-            {
-              "name": "Materials",
-              "allocationPercentage" : 50,
-              "allocationAmount": 5000,
-              "balanceAmount": 400,
-              "netCost" : 0,
-              "marketValue" : 0,
-              "saleFee" : 0,
-              "netProceeds" : 0,
-              "gains": 0,
-              "gainsPerncetage": 0,
-              "securities": [
-                {
-                  "id": "ABAN.N0000",
-                  "name": "ABANS ELECTRICALS PLC",
-                  "allocationPercentage" : 50,
-                  "allocationAmount": 2500,
-                  "balanceAmount": 400,
-                  "netCost" : 0,
-                  "marketValue" : 0,
-                  "saleFee" : 0,
-                  "netProceeds" : 0,
-                  "gains": 0,
-                  "gainsPerncetage": 0,
-                  "quantity": 2,
-                  "averagePerUnitCost": 2.44,
-                  "livePerUnitCost": 20.44
-                },
-                {
-                  "id": "ABL.N0000",
-                  "name": "AMANA BANK PLC",
-                  "allocationPercentage" : 50,
-                  "allocationAmount": 2500,
-                  "balanceAmount": 400,
-                  "netCost" : 0,
-                  "marketValue" : 0,
-                  "saleFee" : 0,
-                  "netProceeds" : 0,
-                  "gains": 0,
-                  "gainsPerncetage": 0,
-                  "quantity": 2,
-                  "averagePerUnitCost": 2.44,
-                  "livePerUnitCost": 20.44
-                }
-              ]
-            }
-          ]
-        }
-    
-
-
-  const [portfolio, setPortfolio] = useState(accountInitialState);
+  const [portfolio, setPortfolio] = useState(null);
 
   useEffect(() => {
 
     let ignore = false;
-    setPortfolio(accountInitialState);
 
     async function fetchPortfolio() {
-      const respose = await fetch("https://682383c365ba05803397073e.mockapi.io/api/cse/Account")
+      // const respose = await fetch("https://682383c365ba05803397073e.mockapi.io/api/cse/Account")
+      const respose = await fetch("http://127.0.0.1:8000/account/dashboard")
+      debugger;
       if(!respose.ok)
         throw new Error("error loading");  
 
-      const data = await respose.json();
-      
-      if(!ignore)
-        setPortfolio(data);
+      const account : AccountSnapshot  = await respose.json();
+
+      debugger
+      if(!ignore){
+          const accountAfterSumming : any = hydradeCalculatedValues(account);
+          setPortfolio(accountAfterSumming);
+      }
+        
     }
 
     fetchPortfolio();
@@ -147,70 +85,11 @@ export default function Home() {
   return (
     <>
       <div className="p-4 overflow-auto">
-      
-      <AccountSnapshotComponent></AccountSnapshotComponent>
-
-      {/* <div className="grid grid-cols-15 gap-1">
-        <div className="col-span-15 rounded-md bg-amber-400 p-2">Header</div>
-
-        <div className="col-span-3 rounded-md bg-amber-100 p-2 text-center">Sector</div>
-        <div className="rounded-md bg-amber-100 p-2 text-left">30</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">25</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">20,000</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">12000</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">2300</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">22000</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">21000</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">21000</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">21000</div>
-        <div className="col-span-3 rounded-md bg-amber-100 p-2 text-center"></div>
-
-        <div className="col-span-3 rounded-md bg-red-200 p-2 text-center">Company (Security)</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">Target</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">actual</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">Amount</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">cost</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">sales fees</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">market value</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">proceeds</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">gains</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">gains %</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">qty</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">average price</div>
-        <div className="rounded-md bg-red-200 p-2 text-center">live price</div>
-
-        <span className="col-span-3 rounded-md bg-blue-100">SAMPATH BANK PLC</span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-
-        <span className="col-span-3 rounded-md bg-blue-100">SAMPATH BANK PLC</span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-        <span className="rounded-md bg-blue-100"></span>
-      </div> */}
-
+        {/* <div>shkshfskh</div>
+        <div>{JSON.stringify(portfolio)}</div> */}
+        {/* <AccountSnapshotComponent account1 = { portfolio }></AccountSnapshotComponent> */}
+        {portfolio ? <AccountSnapshotComponent account1={portfolio} /> : null}
       </div>   
-
     </>  
   );
 }

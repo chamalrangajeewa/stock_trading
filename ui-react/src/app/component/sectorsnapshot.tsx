@@ -8,20 +8,23 @@ export default function SectorSnapshotComponent({ sector }) {
 
   const initialState : SectorSnapshot = sector;
   const [portfolio, setPortfolio] = useState(initialState);
-  // debugger;
+
+  if (!sector) {
+    return(<></>);
+  }
 
   return (
     <>
         <div className="col-span-3 rounded-md bg-amber-100 p-2 text-center">{portfolio.name}</div>
-        <div className="rounded-md bg-amber-100 p-2 text-left">{portfolio.allocationPercentage}</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">{portfolio.allocationAmount}</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">{portfolio.balanceAmount}</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">{portfolio.netCost}</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">{portfolio.marketValue}</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">{portfolio.saleFee}</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">{portfolio.netProceeds}</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">{portfolio.gains}</div>
-        <div className="rounded-md bg-amber-100 p-2 text-center">{portfolio.gainsPerncetage}</div>
+        <div className="rounded-md bg-amber-100 p-2 text-center">{portfolio.allocationPercentage}</div>
+        <div className="rounded-md bg-amber-100 p-2 text-right">{portfolio.allocationAmount.toFixed(2)}</div>
+        <div className="rounded-md bg-amber-100 p-2 text-right">{portfolio.balanceAmount.toFixed(2)}</div>
+        <div className="rounded-md bg-amber-100 p-2 text-right">{portfolio.netCost.toFixed(2)}</div>
+        <div className="rounded-md bg-amber-100 p-2 text-right">{portfolio.marketValue.toFixed(2)}</div>
+        <div className="rounded-md bg-amber-100 p-2 text-right">{portfolio.saleFee.toFixed(2)}</div>
+        <div className="rounded-md bg-amber-100 p-2 text-right">{portfolio.netProceeds.toFixed(2)}</div>
+        <div className="rounded-md bg-amber-100 p-2 text-right">{portfolio.gains.toFixed(2)}</div>
+        <div className="rounded-md bg-amber-100 p-2 text-right">{portfolio.gainsPerncetage.toFixed()}</div>
         <div className="col-span-3 rounded-md bg-amber-100 p-2 text-center"></div>
         <HeaderComponent/>
     </>  
