@@ -19,7 +19,7 @@ async def view_dashboard(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])]):
  
     command : ViewDashboardCashCommand = ViewDashboardCashCommand()
-    command.externalAccountId = "CAS/104948-LI/0"
+    command.externalAccountId = str("CAS/104948-LI/0")
     entity = await mediator.send_async(command)
 
     return entity

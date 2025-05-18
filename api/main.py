@@ -56,6 +56,7 @@ def create_app() -> FastAPI:
 
     origins = [
     "http://localhost:3000",
+    "http://172.25.80.1:3000"
     # Add more origins here
     ]
 
