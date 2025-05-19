@@ -29,8 +29,6 @@ def create_app() -> FastAPI:
             "db" : {"url": "sqlite:///./webapp.db"} 
         }
     )
-   
-    # container.wire(modules=[".routers.transactions"])
 
     app = FastAPI(
     openapi_tags=tags_metadata,

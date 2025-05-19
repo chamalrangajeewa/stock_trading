@@ -1,4 +1,6 @@
 from dependency_injector import containers, providers
+
+from .synclivepricecommandhandler import SyncLivePriceCommandHandler
 from .depositcashcommandhandler import DepositCashCommandHandler
 from .purchasesecuritycommandhandler import PurchaseSecurityCommandHandler
 from .sellsecuritycommandhandler import SellSecurityCommandHandler
@@ -31,5 +33,10 @@ class Container(containers.DeclarativeContainer):
 
     viewdashboardcommand_handler = providers.Factory(
         ViewDashboardCommandHandler,
+        storageClient = storage_client 
+    )
+
+    synclivepricecommand_handler = providers.Factory(
+        SyncLivePriceCommandHandler,
         storageClient = storage_client 
     )

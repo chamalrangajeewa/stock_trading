@@ -2,7 +2,7 @@
 from typing import List
 from mediatr import Mediator
 from .persistence import PersistenceContainer 
-from .commands import CommandContainer, DepositCashCommandHandler, PurchaseSecurityCommandHandler, SellSecurityCommandHandler,WidrawCashCommandHandler, ViewDashboardCashCommand, ViewDashboardCommandHandler
+from .commands import CommandContainer, DepositCashCommandHandler, PurchaseSecurityCommandHandler, SellSecurityCommandHandler,WidrawCashCommandHandler, ViewDashboardCommandHandler, SyncLivePriceCommandHandler
 from .routers.containers import RouteContainer
 
 from dependency_injector import containers, providers
@@ -33,28 +33,27 @@ class ApplicationContainer(containers.DeclarativeContainer):
     )
 
     persistence_package.container.wire(modules=[".routers.transactions"])
-    # persistence_package.container.wire(modules=[".routers.transactions",".routers.account"])
-
+    
     command_package = providers.Container(
         CommandContainer,
         storage_client = persistence_package.container.database_sqllite
     )
 
     command_package.container.wire(modules=[".routers.transactions"])
-    # command_package.container.wire(modules=[".routers.transactions",".routers.account"])
-
+    
     route_package = providers.Container(
         RouteContainer
     )
 
     route_package.container.wire(modules=[".routers.transactions"])
-    # route_package.container.wire(modules=[".routers.transactions",".routers.account"])
-
-    __handlertype_handlerFactory_pair = [(DepositCashCommandHandler, command_package.container.depositcashcommand_handler),
+   
+    __handlertype_handlerFactory_pair = [
+         (DepositCashCommandHandler, command_package.container.depositcashcommand_handler),
          (PurchaseSecurityCommandHandler, command_package.container.purchasesecuritycommand_handler),
          (SellSecurityCommandHandler, command_package.container.sellsecuritycommand_handler),
          (WidrawCashCommandHandler, command_package.container.widrawcashcommand_handler),
-         (ViewDashboardCommandHandler, command_package.container.viewdashboardcommand_handler)]
+         (ViewDashboardCommandHandler, command_package.container.viewdashboardcommand_handler),
+         (SyncLivePriceCommandHandler, command_package.container.synclivepricecommand_handler)]
     
     collection =  providers.Object(__handlertype_handlerFactory_pair)
 

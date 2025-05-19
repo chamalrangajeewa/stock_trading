@@ -4,3 +4,4 @@ from .purchasesecuritycommandhandler import PurchaseSecurityCommandHandler, Purc
 from .sellsecuritycommandhandler import SellSecurityCommandHandler, SellSecurityCommand
 from .widrawcashcommandhandler import WidrawCashCommandHandler, WidrawCashCommand
 from .viewdashboardcommandhandler import ViewDashboardCommandHandler, ViewDashboardCashCommand
+from .synclivepricecommandhandler import SyncLivePriceCommandHandler, SyncLivePriceCommand
