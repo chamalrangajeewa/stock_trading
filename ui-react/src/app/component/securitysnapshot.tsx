@@ -25,8 +25,8 @@ export default function SecuritySnapshotComponent({ security }) {
         <span className="rounded-md bg-blue-100 p-2 text-right">{o.gains.toFixed(2)}</span>
         <span className="rounded-md bg-blue-100 p-2 text-right">{o.gainsPerncetage.toFixed()}</span>
         <span className="rounded-md bg-blue-100 p-2 text-right">{o.quantity}</span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.averagePerUnitCost}</span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.livePerUnitCost}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.averagePerUnitCost.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{o.livePerUnitCost.toFixed(2)}</span>
     </>  
   );
 }
