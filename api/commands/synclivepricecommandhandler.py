@@ -20,7 +20,8 @@ class SyncLivePriceCommandHandler():
             entity: SecurityEntity = session.query(SecurityEntity).filter(SecurityEntity.id == request.securityId).first()
             
             if not entity:
-                raise Exception(f"securtyEntity not found,{request.securityId}")
+                return "OK"
+                # raise Exception(f"securtyEntity not found,{request.securityId}")
 
             entity.livePerUnitCost = request.unitPrice
             session.commit()
