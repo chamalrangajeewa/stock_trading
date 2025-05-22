@@ -90,15 +90,15 @@ class ViewDashboardCommandHandler():
                 if len(sectorSnapshotEntity.securitySnapshots) == 0:
                     continue
 
-                sectorEntity = sectorSnapshotEntity.sector
-                
+                sectorEntity = sectorSnapshotEntity.sector                
 
                 securities:List[SecuritySnapshot] = list()
 
                 for securitysnapshot in sectorSnapshotEntity.securitySnapshots:
-
-                    g = securitysnapshot.security.livePerUnitCost
                     
+                    if securitysnapshot.quantity == 0:
+                        continue
+
                     security:SecuritySnapshot =  SecuritySnapshot(
                         allocationPercentage = securitysnapshot.fundAllocationPercentage,
                         averagePerUnitCost= securitysnapshot.averagePerUnitCost,
