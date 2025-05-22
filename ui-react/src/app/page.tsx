@@ -43,7 +43,7 @@ function hydradeCalculatedValues(account : AccountSnapshot)
           account.netProceeds = account.sectors.map(o => o.netProceeds).reduce((a,b) => a + b, 0);
           account.gains = account.sectors.map(o => o.gains).reduce((a,b) => a + b, 0);
           account.gainsPerncetage = (account.gains / account.netCost) * 100; 
-          account.balanceAmount = account.allocationAmount - account.netCost;
+          account.balanceAmount = account.balanceAmount;
 
           return account;
 }
