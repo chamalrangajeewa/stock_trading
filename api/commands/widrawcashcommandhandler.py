@@ -34,6 +34,9 @@ class WidrawCashCommandHandler():
             if entity:
                 raise Exception("duplicate transaction")
            
+            if (accountEntity.fundBalance - request.netAmount) != request.newBalance:
+                raise Exception("the account balance does not match up")
+            
             entity = TransactionEntity()
             entity.netAmount = request.netAmount
             entity.date = request.date

@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Context, Decimal
 
 from api.persistence.database import Database
 from api.persistence.service import AccountEntity, SectorSnapShotEntity, TransactionEntity,SecuritySnapShotEntity, SecurityEntity
@@ -41,6 +42,11 @@ class PurchaseSecurityCommandHandler():
             
             if entity:
                 raise Exception("duplicate transaction")
+            
+            balance  = accountEntity.fundBalance - request.netAmount - request.newBalance 
+
+            if (round(balance)) != 0:
+                raise Exception(f"the account balance does not match up. {accountEntity.fundBalance} {request.netAmount} {request.newBalance} {(accountEntity.fundBalance - request.netAmount)}")
            
             entity = TransactionEntity()
             entity.netAmount = request.netAmount

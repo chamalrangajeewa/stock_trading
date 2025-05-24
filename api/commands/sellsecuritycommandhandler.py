@@ -6,14 +6,6 @@ from ..persistence.database import Database
 from ..persistence.service import AccountEntity, SectorSnapShotEntity, TransactionEntity,SecuritySnapShotEntity, SecurityEntity
 
 class SellSecurityCommand():
-    
-    # def __init__(self, _externalId : str, _date : datetime, _securityId : str, _quantity : int, _unitPrice : float, _cost : float):
-    #  self.externalId = _externalId
-    #  self.date = _date
-    #  self.securityId  = _securityId
-    #  self.quantity = _quantity
-    #  self.unitPrice = _unitPrice
-    #  self.commission = _cost
 
     securityId : str
     quantity : int
@@ -47,6 +39,9 @@ class SellSecurityCommandHandler():
             if entity:
                 raise Exception("duplicate transaction")
            
+            if (accountEntity.fundBalance + request.netAmount) != request.newBalance:
+                raise Exception("the account balance does not match up")
+            
             entity = TransactionEntity()
             entity.netAmount = request.netAmount
             entity.date = request.date
