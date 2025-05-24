@@ -1,5 +1,6 @@
 'use client';
 
+import { useReducer } from 'react';
 import  React from "react";
 import SectorSnapshotComponent from "./sectorsnapshot";
 import SecuritySnapshotComponent from "./securitysnapshot";
@@ -47,25 +48,6 @@ export default function AccountSnapshotComponent({ account1 }) {
     //     .then((data) => console.error(data))
     //     .catch((error) => console.error(error))
   }
-
-  // function save(data: any){
-
-  //   const init = { 
-  //     headers: new Headers({
-  //     "content-type": "application/json",
-  //     }),
-  //     method : "POST",
-  //     body: JSON.stringify(data)
-  //   };
-
-  //   const request = new Request("http://127.0.0.1:8000/account/syncprice", init);
-  //   const respose = fetch(request)
-  //   .then((resp) => {
-  //         if (!resp.ok) {
-  //           throw new Error(`HTTP error, status = ${resp.status}`);
-  //         }
-  //       })
-  // }
   
   const account : AccountSnapshot = account1;      
   if (!account) {
@@ -76,7 +58,9 @@ export default function AccountSnapshotComponent({ account1 }) {
     <>                
         <div className="grid grid-cols-15 gap-1">
           <div className="col-span-4 rounded-md bg-amber-400 p-2">{account.id} ({account.owner})</div>          
-          <div className="rounded-md bg-amber-400 p-2 text-right">{account.allocationAmount.toFixed(2)}</div>
+          <div className="rounded-md bg-amber-400 p-2 text-right">
+            <input name="allocation" min="0" step="1" type="number" defaultValue={account.allocationAmount} className="border-black w-20 text-right"></input>
+          </div>
           <div className="rounded-md bg-amber-400 p-2 text-right">{account.balanceAmount.toFixed(2)}</div>
           <div className="rounded-md bg-amber-400 p-2 text-right">{account.netCost.toFixed(2)}</div>
           <div className="rounded-md bg-amber-400 p-2 text-right">{account.marketValue.toFixed(2)}</div>

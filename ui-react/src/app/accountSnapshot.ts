@@ -1,4 +1,3 @@
-
 export class SecuritySnapshot {
 
     name : string = '';

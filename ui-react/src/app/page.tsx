@@ -60,13 +60,12 @@ export default function Home() {
     async function fetchPortfolio() {
       // const respose = await fetch("https://682383c365ba05803397073e.mockapi.io/api/cse/Account")
       const respose = await fetch("http://127.0.0.1:8000/account/dashboard")
-      debugger;
+
       if(!respose.ok)
         throw new Error("error loading");  
 
       const account : AccountSnapshot  = await respose.json();
 
-      debugger
       if(!ignore){
           const accountAfterSumming : any = hydradeCalculatedValues(account);
           setPortfolio(accountAfterSumming);
@@ -85,9 +84,6 @@ export default function Home() {
   return (
     <>
       <div className="p-4 overflow-auto">
-        {/* <div>shkshfskh</div>
-        <div>{JSON.stringify(portfolio)}</div> */}
-        {/* <AccountSnapshotComponent account1 = { portfolio }></AccountSnapshotComponent> */}
         {portfolio ? <AccountSnapshotComponent account1={portfolio} /> : null}
       </div>   
     </>  
