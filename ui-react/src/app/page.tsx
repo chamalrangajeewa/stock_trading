@@ -1,11 +1,19 @@
 'use client';
 
-import  React from "react";
-import { useState, useEffect } from "react";
+import  React, { Suspense } from "react";
+import { useState, useEffect, useReducer} from "react";
 import { AccountSnapshot } from "./accountSnapshot";
 import AccountSnapshotComponent from "./component/accountsnapshot";
+import { LoadingComponent } from "./component/loading";
+import { accountReducer } from "./reducers/accountReducer"
+import { StockSplitEvent } from "./reducers/stockSplitEvent";
+import { ModifyAccountAllocationAmountEvent } from "./reducers/modifyAccountAllocationAmountEvent";
+import { ModifySectorAllocationPercentageEvent } from "./reducers/modifySectorAllocationPercentageEvent";
+import { ModifySecurityAllocationPercentageEvent } from "./reducers/modifySecurityAllocationPercentageEvent";
+import useSWR from "swr";
+import { AccountService } from "./service/accountService";
 
-function hydradeCalculatedValues(account : AccountSnapshot)
+function hydradeCalculatedValues(account : AccountSnapshot) : AccountSnapshot | null
 {
       if (!account) {
         return null
@@ -51,40 +59,51 @@ function hydradeCalculatedValues(account : AccountSnapshot)
 
 export default function Home() {
 
-  const [portfolio, setPortfolio] = useState(null);
+  const { isLoading, error, data: portfolio} = useSWR("cacheKey", async (id) => {
+      let service : AccountService  = new AccountService();
+      let resposeData = await service.get(id);
+      let accountAfterSumming : any = hydradeCalculatedValues(resposeData);
+      // console.log("data from swr", accountAfterSumming);
+      return accountAfterSumming;
+    });
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    let ignore = false;
+  //   let ignore = false;
 
-    async function fetchPortfolio() {
-      // const respose = await fetch("https://682383c365ba05803397073e.mockapi.io/api/cse/Account")
-      const respose = await fetch("http://127.0.0.1:8000/account/dashboard")
+  //   async function fetchPortfolio() {
+  //     // const respose = await fetch("https://682383c365ba05803397073e.mockapi.io/api/cse/Account")
+  //     const respose = await fetch("http://127.0.0.1:8000/account/dashboard")
 
-      if(!respose.ok)
-        throw new Error("error loading");  
+  //     if(!respose.ok)
+  //       throw new Error("error loading");  
 
-      const account : AccountSnapshot  = await respose.json();
+  //     const account : AccountSnapshot  = await respose.json();
 
-      if(!ignore){
-          const accountAfterSumming : any = hydradeCalculatedValues(account);
-          setPortfolio(accountAfterSumming);
-      }
+  //     if(!ignore){
+  //         const accountAfterSumming : any = hydradeCalculatedValues(account);
+  //         setPortfolio(accountAfterSumming);
+  //     }
         
-    }
+  //   }
 
-    fetchPortfolio();
+  //   fetchPortfolio();
 
-    return () => {
-      ignore = true;
-    }
-  }, []);
-
+  //   return () => {
+  //     ignore = true;
+  //   }
+  // }, []);
 
   return (
     <>
+      
+      
       <div className="p-4 overflow-auto">
-        {portfolio ? <AccountSnapshotComponent account1={portfolio} /> : null}
+        {/* {JSON.stringify(account)} */}
+        {/* {process.env.NODE_ENV} */}
+        <Suspense fallback={<LoadingComponent />}>
+          {portfolio ? <AccountSnapshotComponent account={portfolio} /> : null}
+        </Suspense>        
       </div>   
     </>  
   );
