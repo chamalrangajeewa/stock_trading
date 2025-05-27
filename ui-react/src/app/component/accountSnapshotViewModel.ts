@@ -1,39 +1,10 @@
-export class SecuritySnapshot {
+import { immerable } from "immer";
+import { AccountSnapshot } from "../service/accountSnapshot";
+import { SectorSnapshotViewModel } from "./sectorSnapshotViewModel";
 
-    name : string = '';
-    id : string = '';    
-    allocationPercentage: number = 0;
-    allocationAmount : number = 0;
-    balanceAmount : number = 0;
-    netCost : number = 0;
-    marketValue : number = 0;
-    saleFee : number = 0;
-    netProceeds : number = 0;
-    gains: number = 0;
-    gainsPerncetage:number = 0;
-    quantity : number = 0;
-    averagePerUnitCost : number = 0
-    livePerUnitCost : number = 0;
-
-}
-
-export class SectorSnapshot {
-
-    name : string = '';
-    securities : SecuritySnapshot[] = [];
-    allocationPercentage: number = 0;
-    allocationAmount : number = 0;
-    balanceAmount : number = 0;
-    netCost : number = 0;
-    marketValue : number = 0;
-    saleFee : number = 0;
-    netProceeds : number = 0;
-    gains: number = 0;
-    gainsPerncetage:number = 0;
-}
-
-export class AccountSnapshot {
+export class AccountSnapshotViewModel {
     
+    [immerable] = true;
     id : string = '';
     owner : string = '';
     allocationAmount : number = 0;
@@ -44,7 +15,25 @@ export class AccountSnapshot {
     netProceeds : number = 0;
     gains: number = 0;
     gainsPerncetage:number = 0;
-    sectors : SectorSnapshot[] = [];
+    sectors : SectorSnapshotViewModel[] = [];
+
+    constructor(o : AccountSnapshot){
+        
+        if(!o)
+            return;
+
+        this.sectors = o.sectors.map(i => new SectorSnapshotViewModel(i));
+        this.id = o.id;
+        this.owner = o.owner;
+        this.allocationAmount = o.allocationAmount;
+        this.balanceAmount = o.balanceAmount;
+        this.netCost = o.netCost;
+        this.marketValue =o.marketValue;
+        this.saleFee =o.saleFee;
+        this.netProceeds=o.netProceeds;
+        this.gains=o.gains;
+        this.gainsPerncetage=o.gainsPerncetage;
+    }
 
     reevaluateCalculatedFeilds(){             
 
@@ -81,5 +70,23 @@ export class AccountSnapshot {
         this.gains = this.sectors.map(o => o.gains).reduce((a,b) => a + b, 0);
         this.gainsPerncetage = (this.gains / this.netCost) * 100; 
         this.balanceAmount = this.balanceAmount;
+    }
+
+    clone() : AccountSnapshotViewModel{
+        let o = new AccountSnapshotViewModel(new AccountSnapshot());
+        
+        o.id = this.id;
+        o.owner = this.owner;
+        o.allocationAmount = this.allocationAmount;
+        o.balanceAmount = this.balanceAmount;
+        o.netCost = this.netCost;
+        o.marketValue =this.marketValue;
+        o.saleFee =this.saleFee;
+        o.netProceeds=this.netProceeds;
+        o.gains=this.gains;
+        o.gainsPerncetage=this.gainsPerncetage;
+        o.sectors = this.sectors.map(i => i.clone());
+
+        return o;
     }
 }

@@ -1,4 +1,5 @@
-import { AccountSnapshot } from "../accountSnapshot";
+// import { AccountSnapshot } from "../accountSnapshot";
+import { AccountSnapshot } from "./accountSnapshot";
 
 // export const getTodos = async () => {
 //   const response = await axios.get("http://localhost:3004/todos");

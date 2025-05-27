@@ -4,39 +4,39 @@ import { useReducer } from 'react';
 import  React from "react";
 import SectorSnapshotComponent from "./sectorsnapshot";
 import SecuritySnapshotComponent from "./securitysnapshot";
-import { AccountSnapshot } from "../accountSnapshot";
+// import { AccountSnapshot } from "../accountSnapshot";
 import { accountReducer } from '../reducers/accountReducer';
 import { StockSplitEvent } from '../reducers/stockSplitEvent';
 import { ModifyAccountAllocationAmountEvent } from '../reducers/modifyAccountAllocationAmountEvent';
 import { ModifySectorAllocationPercentageEvent } from '../reducers/modifySectorAllocationPercentageEvent';
 import { ModifySecurityAllocationPercentageEvent } from '../reducers/modifySecurityAllocationPercentageEvent';
+import { AccountSnapshotViewModel } from './accountSnapshotViewModel';
 
 export interface AccountProps {
-  account?: AccountSnapshot;
+  account: AccountSnapshotViewModel;
 }
 
 export default function AccountSnapshotComponent(props: AccountProps) {
    
   const [account, dispatch] = useReducer(accountReducer, props.account);
 
-  function handleAccountEvent(e:Event, payload:any) {
-    debugger;
+  const handleAccountEvent = (e:Event, payload:any) => {
     e.stopPropagation();
-    console.log("payload", payload);
     dispatch(payload);
    }
 
-   function handleSyncUnitPriceClick(e:Event, payload:any) {
-    e.stopPropagation();
-    dispatch(payload);
-   }
+  // function handleAccountEvent(e:Event, payload:any) {
+  //   e.stopPropagation();
+  //   dispatch(payload);
+  //  }
 
   if (!account) {
     return(<></>);
   }
 
   return (
-    <>                
+    <>       
+         
         <div className="grid grid-cols-15 gap-1">
           <div className="col-span-4 rounded-md bg-amber-400 p-2">{account.id} ({account.owner})</div>          
           <div className="rounded-md bg-amber-400 p-2 text-right">
@@ -50,23 +50,22 @@ export default function AccountSnapshotComponent(props: AccountProps) {
           <div className="rounded-md bg-amber-400 p-2 text-right">{account.gains.toFixed(2)}</div>
           <div className="rounded-md bg-amber-400 p-2 text-right">{account.gainsPerncetage.toFixed(2)}</div>
           <div className="col-span-3 rounded-md bg-amber-400 p-2">
-            <button className="rounded-md bg-red-200" onClick= {(evt) => handleSyncUnitPriceClick(evt, new StockSplitEvent())}>stocksplit</button>
-            <button className="rounded-md bg-red-200" onClick={(evt) => handleSyncUnitPriceClick(evt, new ModifyAccountAllocationAmountEvent({id:account.id, allocationAmount: 10}))}>account allocation</button>
-            <button className="rounded-md bg-red-200" onClick={(evt) => handleSyncUnitPriceClick(evt, new ModifySectorAllocationPercentageEvent())}>sectors %</button>
-            <button className="rounded-md bg-red-200" onClick={(evt) => handleSyncUnitPriceClick(evt, new ModifySecurityAllocationPercentageEvent())}>Security %</button>         
+            
           </div>
 
           {account.sectors.map((sector,index) => (
             <>
               <SectorSnapshotComponent 
-              key = {index}
-              sector = { sector }  
+              key = { sector.name }
+              sector = { sector } 
+              accountEventHandler = { handleAccountEvent }
               />
               {
                 sector.securities.map((security,i) => (
                   <>
                     <SecuritySnapshotComponent 
                     key={security.id}
+                    accountEventHandler = { handleAccountEvent }
                     security = {security}/>
                   </>
                 ))

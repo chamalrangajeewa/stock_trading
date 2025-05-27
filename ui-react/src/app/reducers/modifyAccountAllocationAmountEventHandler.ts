@@ -1,13 +1,24 @@
-import { AccountSnapshot } from "../accountSnapshot";
+import {produce} from "immer"
+import { AccountSnapshotViewModel } from "../component/accountSnapshotViewModel";
+import { AccountSnapshot } from "../service/accountSnapshot";
 
 export class ModifyAccountAllocationAmountEventHandler {
 
-  handle(currentState: AccountSnapshot  | undefined | null, event: any): AccountSnapshot  | undefined | null {
+  handle(currentState: AccountSnapshotViewModel, event: any): AccountSnapshotViewModel {
 
-    console.log('hello from ModifyAccountAllocationAmountEventHandler', currentState);
+    debugger;
+    // const nextState = produce(currentState, draft => {      
+    //   draft.allocationAmount = event.allocationAmount;      
+    //   draft.reevaluateCalculatedFeilds();    
+    // })
     
-    let result = new AccountSnapshot();
-    result.allocationAmount = event.allocationAmount;
-    return result;
+    const nextState1 = currentState.clone();
+    nextState1.allocationAmount = event.allocationAmount;
+    nextState1.reevaluateCalculatedFeilds();
+    
+    
+    console.log('ModifyAccountAllocationAmountEventHandler currentState', currentState);
+    console.log('ModifyAccountAllocationAmountEventHandler nextState', nextState1);
+    return nextState1;
   }
 }

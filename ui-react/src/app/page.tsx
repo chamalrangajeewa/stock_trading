@@ -12,6 +12,7 @@ import { ModifySectorAllocationPercentageEvent } from "./reducers/modifySectorAl
 import { ModifySecurityAllocationPercentageEvent } from "./reducers/modifySecurityAllocationPercentageEvent";
 import useSWR from "swr";
 import { AccountService } from "./service/accountService";
+import { AccountSnapshotViewModel } from "./component/accountSnapshotViewModel";
 
 function hydradeCalculatedValues(account : AccountSnapshot) : AccountSnapshot | null
 {
@@ -61,38 +62,11 @@ export default function Home() {
 
   const { isLoading, error, data: portfolio} = useSWR("cacheKey", async (id) => {
       let service : AccountService  = new AccountService();
-      let resposeData = await service.get(id);
-      let accountAfterSumming : any = hydradeCalculatedValues(resposeData);
-      // console.log("data from swr", accountAfterSumming);
-      return accountAfterSumming;
+      let resposeData = await service.get(id);  
+      let accountViewModel = new AccountSnapshotViewModel(resposeData);
+      accountViewModel.reevaluateCalculatedFeilds();
+      return accountViewModel;
     });
-
-  // useEffect(() => {
-
-  //   let ignore = false;
-
-  //   async function fetchPortfolio() {
-  //     // const respose = await fetch("https://682383c365ba05803397073e.mockapi.io/api/cse/Account")
-  //     const respose = await fetch("http://127.0.0.1:8000/account/dashboard")
-
-  //     if(!respose.ok)
-  //       throw new Error("error loading");  
-
-  //     const account : AccountSnapshot  = await respose.json();
-
-  //     if(!ignore){
-  //         const accountAfterSumming : any = hydradeCalculatedValues(account);
-  //         setPortfolio(accountAfterSumming);
-  //     }
-        
-  //   }
-
-  //   fetchPortfolio();
-
-  //   return () => {
-  //     ignore = true;
-  //   }
-  // }, []);
 
   return (
     <>

@@ -3,34 +3,44 @@
 import  React from "react";
 import { useState, useEffect } from "react";
 import { SecuritySnapshot } from "../accountSnapshot";
-export default function SecuritySnapshotComponent({ security }) {
+import { SecuritySnapshotViewModel } from "./securitySnapshotViewModel";
+import { ModifySecurityAllocationPercentageEvent } from "../reducers/modifySecurityAllocationPercentageEvent";
+import { StockSplitEvent } from "../reducers/stockSplitEvent";
 
-  const initialState : SecuritySnapshot = security;
-  const [o, setSecurity] = useState(initialState);
+export interface SecurityProps {
+  security: SecuritySnapshotViewModel;
+  accountEventHandler : (e:Event, payload:any) => void
+}
 
-  if (!security) {
+
+export default function SecuritySnapshotComponent(props: SecurityProps) {
+
+  let security = props.security;
+  let handleAccountEvent = props.accountEventHandler;
+
+  if (!props.security) {
     return(<></>);
   }
 
   return (
     <>
-        <span className="col-span-3 rounded-md bg-blue-100">{o.name}({o.id})</span>
+        <span className="col-span-3 rounded-md bg-blue-100">{security.name}({security.id})</span>
         <span className="rounded-md bg-blue-100 p-2 text-center">
-          <input name="allocation" min="0" max="100" step="1" type="number" defaultValue={o.allocationPercentage} className="border-black w-11 text-right"></input>
+          <input name="allocation" min="0" max="100" step="1" type="number" onChange={(event) => handleAccountEvent(event.nativeEvent, new ModifySecurityAllocationPercentageEvent({id:security.id, allocationPercentage: Number(event.target.value)}))} defaultValue={security.allocationPercentage} className="border-black w-11 text-right"></input>
         </span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.allocationAmount.toFixed(2)}</span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.balanceAmount.toFixed(2)}</span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.netCost.toFixed(2)}</span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.marketValue.toFixed(2)}</span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.saleFee.toFixed(2)}</span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.netProceeds.toFixed(2)}</span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.gains.toFixed(2)}</span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.gainsPerncetage.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{security.allocationAmount.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{security.balanceAmount.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{security.netCost.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{security.marketValue.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{security.saleFee.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{security.netProceeds.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{security.gains.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{security.gainsPerncetage.toFixed(2)}</span>
         <span className="rounded-md bg-blue-100 p-2 text-right">
-          <input className="border-black w-17 text-right" name="allocation" min="0" step="1" type="number" defaultValue={o.quantity}></input>
+          <input className="border-black w-17 text-right" name="allocation" min="0" step="1" type="number" onChange={(event) => handleAccountEvent(event.nativeEvent, new StockSplitEvent({id:security.id, quantity: Number(event.target.value)}))} defaultValue={security.quantity}></input>
         </span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.averagePerUnitCost.toFixed(2)}</span>
-        <span className="rounded-md bg-blue-100 p-2 text-right">{o.livePerUnitCost.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{security.averagePerUnitCost.toFixed(2)}</span>
+        <span className="rounded-md bg-blue-100 p-2 text-right">{security.livePerUnitCost.toFixed(2)}</span>
     </>  
   );
 }

@@ -7,6 +7,7 @@ import { ModifyAccountAllocationAmountEvent } from "./modifyAccountAllocationAmo
 import { ModifySectorAllocationPercentageEvent } from "./modifySectorAllocationPercentageEvent";
 import { ModifySecurityAllocationPercentageEvent } from "./modifySecurityAllocationPercentageEvent";
 import { StockSplitEvent } from "./stockSplitEvent";
+import { AccountSnapshotViewModel } from "../component/accountSnapshotViewModel";
 
 type eventType = ModifyAccountAllocationAmountEvent | 
                  ModifySectorAllocationPercentageEvent |
@@ -14,13 +15,18 @@ type eventType = ModifyAccountAllocationAmountEvent |
                  StockSplitEvent               
 
 const accountEventHandlers = new Map([
-  [StockSplitEvent.type, new StockSplitEventHandler()],
-  [ModifyAccountAllocationAmountEvent.type, new ModifyAccountAllocationAmountEventHandler()],
-  [ModifySectorAllocationPercentageEvent.type, new ModifySectorAllocationPercentageEventHandler()],
-  [ModifySecurityAllocationPercentageEvent.type, new ModifySecurityAllocationPercentageEventHandler()]
+  [StockSplitEvent.type, new StockSplitEventHandler()]
+  ,[ModifyAccountAllocationAmountEvent.type, new ModifyAccountAllocationAmountEventHandler()]
+  ,[ModifySectorAllocationPercentageEvent.type, new ModifySectorAllocationPercentageEventHandler()]
+  ,[ModifySecurityAllocationPercentageEvent.type, new ModifySecurityAllocationPercentageEventHandler()]
 ]);
 
-export function accountReducer(account: AccountSnapshot | undefined | null , event: eventType ) {
+export function accountReducer(account: AccountSnapshotViewModel, event: eventType ) {
   
-  return accountEventHandlers.get(event.type)?.handle(account, event);
+  let hanldler = accountEventHandlers.get(event.type);
+  
+  if(hanldler)
+    return hanldler.handle(account, event); 
+
+  return account;
 }

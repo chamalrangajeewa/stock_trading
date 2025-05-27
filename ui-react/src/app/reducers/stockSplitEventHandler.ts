@@ -1,8 +1,9 @@
 import { AccountSnapshot } from "../accountSnapshot";
+import { AccountSnapshotViewModel } from "../component/accountSnapshotViewModel";
 
 export class StockSplitEventHandler {
 
-  handle(currentState: AccountSnapshot, event: any): AccountSnapshot {
+  handle(currentState: AccountSnapshotViewModel, event: any): AccountSnapshotViewModel {
 
     console.log('hello from stocksplit',currentState);
     return currentState;
