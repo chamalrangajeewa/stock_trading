@@ -46,3 +46,4 @@ export class AccountSnapshot {
     gainsPerncetage:number = 0;
     sectors : SectorSnapshot[] = [];  
 }
+

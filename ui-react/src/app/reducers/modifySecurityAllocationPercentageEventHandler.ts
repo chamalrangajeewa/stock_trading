@@ -1,3 +1,4 @@
+import { produce } from "immer";
 import { AccountSnapshot } from "../accountSnapshot";
 import { AccountSnapshotViewModel } from "../component/accountSnapshotViewModel";
 
@@ -5,7 +6,15 @@ export class ModifySecurityAllocationPercentageEventHandler {
 
   handle(currentState: AccountSnapshotViewModel, event: any): AccountSnapshotViewModel {
 
-    console.log('hello from ModifySecurityAllocationPercentageEventHandler',currentState);
-    return currentState;
+    const nextState = produce(currentState, draft => {      
+      let security = draft.sectors.map(o => o.securities.filter(i => i.id == event.id)).flat()[0];
+
+      if (security) {
+        security.allocationPercentage = event.allocationPercentage;
+      }
+      draft.reevaluateCalculatedFeilds();    
+    });
+    
+    return nextState;
   }
 }

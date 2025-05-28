@@ -25,11 +25,6 @@ export default function AccountSnapshotComponent(props: AccountProps) {
     dispatch(payload);
    }
 
-  // function handleAccountEvent(e:Event, payload:any) {
-  //   e.stopPropagation();
-  //   dispatch(payload);
-  //  }
-
   if (!account) {
     return(<></>);
   }
