@@ -1,12 +1,12 @@
-
 export class ModifySecurityAllocationPercentageEvent {
 
   static readonly type: string = 'ModifySecurityAllocationPercentageEvent';
   readonly type : string = ModifySecurityAllocationPercentageEvent.type;
-  id: string = '';
+  
   allocationPercentage: number = 0;
-
-  constructor(values:{id:string , allocationPercentage:number}){
+  securityId: string = '';
+ 
+  constructor(values:{securityId : string, allocationPercentage:number}){
     Object.assign(this, values);
   }
 }

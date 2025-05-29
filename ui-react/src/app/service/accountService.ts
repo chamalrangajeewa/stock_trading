@@ -1,8 +1,10 @@
 // import { AccountSnapshot } from "../accountSnapshot";
+import { StockSplitEvent } from "../reducers/stockSplitEvent";
 import { AccountSnapshot } from "./accountSnapshot";
-import { ModifyInvestmentAllocationAmountRequest } from "./ModifyInvestmentAllocationAmountRequest";
-import { ModifySectorAllocationPercentageRequest } from "./ModifySectorAllocationPercentageRequest";
-import { ModifySecurityAllocationPercentageRequest } from "./ModifySecurityAllocationPercentageRequest";
+import { ModifyInvestmentAllocationAmountRequest } from "./modifyInvestmentAllocationAmountRequest";
+import { ModifySectorAllocationPercentageRequest } from "./modifySectorAllocationPercentageRequest";
+import { ModifySecurityAllocationPercentageRequest } from "./modifySecurityAllocationPercentageRequest";
+import { StocksplitRequest } from "./stocksplitRequest";
 
 export class AccountService {
     constructor(private baseUrl:string = "http://127.0.0.1:8000") {
@@ -10,7 +12,7 @@ export class AccountService {
     }
 
     async get(accountId:string) {
-        const url = `${this.baseUrl}/account/dashboard`;
+        const url = `${this.baseUrl}/portfolio/view?accountId=${accountId}`;
         const respose = await fetch(url);
         
         if(!respose.ok)
@@ -21,7 +23,7 @@ export class AccountService {
     }
 
     async modifyAccountInvestmentAllocationAmount( payload : ModifyInvestmentAllocationAmountRequest): Promise<void> {
-        const url = `${this.baseUrl}/account/modify-allocation-amount`;
+        const url = `${this.baseUrl}/portfolio/adjust-allocation-amount`;
         const respose = await fetch(url, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -33,7 +35,7 @@ export class AccountService {
     }
 
     async modifySectorAllocationPercentage( payload : ModifySectorAllocationPercentageRequest): Promise<void> {
-        const url = `${this.baseUrl}/sector/modify-allocation-percentage`;
+        const url = `${this.baseUrl}/portfolio/sector/adjust-allocation-percentage`;
         const respose = await fetch(url, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -45,7 +47,7 @@ export class AccountService {
     }
 
     async modifySecurityAllocationPercentage( payload : ModifySecurityAllocationPercentageRequest): Promise<void> {
-        const url = `${this.baseUrl}/security/modify-allocation-percentage`;
+        const url = `${this.baseUrl}/portfolio/security/adjust-allocation-percentage`;
         const respose = await fetch(url, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -56,8 +58,8 @@ export class AccountService {
             throw new Error("error loading");  
     }
 
-    async doSecurityStocksplit( payload : ModifySecurityAllocationPercentageRequest): Promise<void> {
-        const url = `${this.baseUrl}/security/do-stock-split`;
+    async doSecurityStocksplit( payload : StocksplitRequest): Promise<void> {
+        const url = `${this.baseUrl}/portfolio/security/stocksplit`;
         const respose = await fetch(url, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -67,5 +69,4 @@ export class AccountService {
         if(!respose.ok)
             throw new Error("error loading");  
     }
-
 }

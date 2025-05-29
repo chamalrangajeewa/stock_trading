@@ -1,5 +1,6 @@
 
 export interface ModifySectorAllocationPercentageRequest {
-    id: string;
+    accountId : string;
+    name: string;
     allocationPercentage: number;
 }

@@ -7,7 +7,7 @@ export class ModifySectorAllocationPercentageEventHandler {
   handle(currentState: AccountSnapshotViewModel, event: any): AccountSnapshotViewModel {
 
     const nextState = produce(currentState, draft => {      
-      let sector = draft.sectors.find(o => o.name === event.id);
+      let sector = draft.sectors.find(o => o.name === event.name);
 
       if (sector) {
         sector.allocationPercentage = event.allocationPercentage;

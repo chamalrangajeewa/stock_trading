@@ -1,5 +1,6 @@
 
 export interface ModifySecurityAllocationPercentageRequest {
-    id: string;
+    accountId: string;
+    securityId : string;
     allocationPercentage: number;
 }

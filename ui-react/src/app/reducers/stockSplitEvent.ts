@@ -1,12 +1,12 @@
-
 export class StockSplitEvent {
 
   static readonly type: string = 'StockSplitEvent';
   readonly type : string = StockSplitEvent.type;
-  id: string = '';
+
+  securityId: string = '';
   quantity: number = 0;
 
-  constructor(values:{id:string , quantity:number}){
+  constructor(values:{securityId : string, quantity : number}){
     Object.assign(this, values);
   }
 }

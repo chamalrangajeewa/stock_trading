@@ -25,7 +25,7 @@ export default function SectorSnapshotComponent(props: SectorProps) {
     <>
         <div className="col-span-3 rounded-md bg-amber-100 p-2 text-center">{sector.name}</div>
         <div className="rounded-md bg-amber-100 p-2 text-center">
-          <input name="allocation" min="0" max="100" step="1" type="number" onChange={(event) => handleAccountEvent(event.nativeEvent, new ModifySectorAllocationPercentageEvent({id:sector.name, allocationPercentage: Number(event.target.value)}))} defaultValue={sector.allocationPercentage} className="border-black w-11 text-right"></input>         
+          <input name="allocation" min="0" max="100" step="1" type="number" onChange={(event) => handleAccountEvent(event.nativeEvent, new ModifySectorAllocationPercentageEvent({name:sector.name, allocationPercentage: Number(event.target.value)}))} defaultValue={sector.allocationPercentage} className="border-black w-11 text-right"></input>         
         </div>
         <div className="rounded-md bg-amber-100 p-2 text-right">{sector.allocationAmount.toFixed(2)}</div>
         <div className="rounded-md bg-amber-100 p-2 text-right">{sector.balanceAmount.toFixed(2)}</div>

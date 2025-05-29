@@ -1,5 +1,5 @@
-
 export interface StocksplitRequest {
-    id: string;
+    accountId: string;
+    securityId : string;
     quantity: number;
 }

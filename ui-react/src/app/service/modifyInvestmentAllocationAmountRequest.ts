@@ -1,5 +1,5 @@
 
 export interface ModifyInvestmentAllocationAmountRequest {
-    id: string;
+    accountId: string;
     allocationAmount: number;
 }

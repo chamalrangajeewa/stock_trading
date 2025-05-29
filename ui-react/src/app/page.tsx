@@ -62,7 +62,7 @@ export default function Home() {
 
   const { isLoading, error, data: portfolio} = useSWR("cacheKey", async (id) => {
       let service : AccountService  = new AccountService();
-      let resposeData = await service.get(id);  
+      let resposeData = await service.get("CAS/104948-LI/0");
       let accountViewModel = new AccountSnapshotViewModel(resposeData);
       accountViewModel.reevaluateCalculatedFeilds();
       return accountViewModel;
