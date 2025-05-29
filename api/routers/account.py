@@ -1,39 +1,86 @@
-from typing import Annotated
-from fastapi import APIRouter, Depends
+from typing import Annotated, ReadOnly
+from fastapi import APIRouter, Depends, Query
 from dependency_injector.wiring import Provide, inject
 from mediatr import Mediator
 
-from .contract.syncunitpricerequest import SyncUnitPriceRequest
-from ..commands import ViewDashboardCashCommand, SyncLivePriceCommand
+from .contract.adjustAllocationAmountRequest import AdjustAllocationAmountRequest
+from .contract.adjustSectorAllocationPercentageRequest import AdjustSectorAllocationPercentageRequest
+from .contract.adjustSecurityAllocationPercentageRequest import AdjustSecurityAllocationPercentageRequest
+from .contract.stocksplitRequest import StocksplitRequest
+
+from ..commands import ViewDashboardCashCommand, AdjustAccountAllocationAmountCommand, AdjustSectorAllocationPercentageCommand, AdjustSecurityAllocationPercentageCommand, StocksplitCommand
 from ..containers import ApplicationContainer
 
+TAG = "portfolio"
+
 router = APIRouter(
-    prefix="/account",
+    prefix="/portfolio",
     responses={404: {"description": "Not found"}},
 )
 
-
-@router.post("/syncprice", tags=["security"])
+@router.get("/view", tags=[TAG])
 @inject
-async def sync_unitprice(
-    mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
-    payload : SyncUnitPriceRequest):
- 
-    commands = [SyncLivePriceCommand(securityId=item.symbol, unitPrice=item.price, date= item.lastTradedTime) for item in payload.reqTradeSummery]
-    
-    for command in commands:
-        # print(command)
-        await mediator.send_async(command)
-    
-    return "OK"
-
-@router.get("/dashboard", tags=["accounts"])
-@inject
-async def view_dashboard(
+async def view_portfolio(
+    accountId: Annotated[str, Query(title="External Account Id", description="This is the Id allocated from the broker.")],
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])]):
- 
+
     command : ViewDashboardCashCommand = ViewDashboardCashCommand()
-    command.externalAccountId = str("CAS/104948-LI/0")
+    command.externalAccountId = accountId
     entity = await mediator.send_async(command)
 
     return entity
+
+
+@router.put("/adjust-allocation-amount", tags=[TAG])
+@inject
+async def adjust_portfolio_allocation_amount(
+    payload : AdjustAllocationAmountRequest,
+    mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])]):
+ 
+    command : AdjustAccountAllocationAmountCommand = AdjustAccountAllocationAmountCommand(
+        externalAccountId=payload.accountId, 
+        allocationAmount = payload.allocationAmount)
+    
+    await mediator.send_async(command)
+
+
+@router.put("/sector/adjust-allocation-percentage", tags=[TAG])
+@inject
+async def adjust_sector_allocation_percentage(
+    payload : AdjustSectorAllocationPercentageRequest,
+    mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])]):
+ 
+    command : AdjustSectorAllocationPercentageCommand = AdjustSectorAllocationPercentageCommand(
+        externalAccountId = payload.accountId, 
+        sectorName = payload.name,
+        allocationPercentage = payload.allocationPercentage)
+    
+    await mediator.send_async(command)
+
+
+@router.put("/security/adjust-allocation-percentage", tags=[TAG])
+@inject
+async def adjust_security_allocation_percentage(
+    payload : AdjustSecurityAllocationPercentageRequest,
+    mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])]):
+ 
+    command : AdjustSecurityAllocationPercentageCommand = AdjustSecurityAllocationPercentageCommand(
+        externalAccountId = payload.accountId, 
+        securityId = payload.securityId,
+        allocationPercentage = payload.allocationPercentage)
+    
+    await mediator.send_async(command)
+
+
+@router.put("/security/stocksplit", tags=[TAG])
+@inject
+async def stocksplit(
+    payload : StocksplitRequest,
+    mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])]):
+ 
+    command : StocksplitCommand = StocksplitCommand(
+        externalAccountId = payload.accountId, 
+        securityId = payload.securityId,
+        quantity = payload.quantity)
+    
+    await mediator.send_async(command)

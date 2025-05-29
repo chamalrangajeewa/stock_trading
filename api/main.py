@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .routers.transactions import router as transactions_router
 from .routers.account import router as account_router
+from .routers.security import securityResourceRouter
 from .containers import ApplicationContainer
 
 tags_metadata = [
@@ -23,6 +24,7 @@ tags_metadata = [
 
 def create_app() -> FastAPI:
     container = ApplicationContainer()
+    container.wire(packages=[".routers"])
     container.config.from_dict(
         {
             "version": "1.0.0",
@@ -48,9 +50,9 @@ def create_app() -> FastAPI:
     },
     debug=True)
 
-    app.container = container
     app.include_router(transactions_router)
     app.include_router(account_router)
+    app.include_router(securityResourceRouter)
 
     origins = [
     "http://localhost:3000",

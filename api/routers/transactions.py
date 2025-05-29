@@ -13,12 +13,14 @@ from .purchasesecurityrequest import PurchaseSecurityRequest
 from .sellsecurityrequest import SellSecurityRequest
 from ..containers import ApplicationContainer
 
+TAG = "transaction"
+
 router = APIRouter(
     prefix="/transaction",
     responses={404: {"description": "Not found"}},
 )
 
-@router.post("/cashIn", tags=["transactions"])
+@router.post("/cashIn", tags=[TAG])
 @inject
 async def cash_in(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
@@ -36,7 +38,7 @@ async def cash_in(
     return await mediator.send_async(command)
  
 
-@router.post("/purchase", tags=["transactions"])
+@router.post("/purchase", tags=[TAG])
 @inject
 async def buy_security(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])],
@@ -59,7 +61,7 @@ async def buy_security(
     return await mediator.send_async(command)
  
 
-@router.post("/sale", tags=["transactions"])
+@router.post("/sale", tags=[TAG])
 @inject
 async def sell_security(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
@@ -82,7 +84,7 @@ async def sell_security(
     return await mediator.send_async(command)
 
 
-@router.post("/cashout", tags=["transactions"])
+@router.post("/cashout", tags=[TAG])
 @inject
 async def cash_out(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
@@ -100,7 +102,7 @@ async def cash_out(
     return await mediator.send_async(command)
  
 
-@router.post("/bulkimport/")
+@router.post("/bulkimport/", tags=[TAG])
 @inject
 async def bulk_import(
     mediator: Annotated[Mediator, Depends(Provide[ApplicationContainer.mediator])], 
