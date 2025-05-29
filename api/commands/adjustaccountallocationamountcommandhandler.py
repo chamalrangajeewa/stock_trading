@@ -20,6 +20,5 @@ class AdjustAccountAllocationAmountCommandHandler():
             if not accountEntity:
                 raise Exception("account not found")
 
+            accountEntity.investment = request.allocationAmount
             session.commit()
-
-

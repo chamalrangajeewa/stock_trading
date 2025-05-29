@@ -2,7 +2,7 @@
 from typing import List
 from mediatr import Mediator
 from .persistence import PersistenceContainer 
-from .commands import CommandContainer, DepositCashCommandHandler, PurchaseSecurityCommandHandler, SellSecurityCommandHandler,WidrawCashCommandHandler, ViewDashboardCommandHandler, SyncLivePriceCommandHandler
+from .commands import AdjustAccountAllocationAmountCommandHandler, AdjustSectorAllocationPercentageCommandHandler, AdjustSecurityAllocationPercentageCommandHandler, CommandContainer, DepositCashCommandHandler, PurchaseSecurityCommandHandler, SellSecurityCommandHandler, StocksplitCommandHandler,WidrawCashCommandHandler, ViewDashboardCommandHandler, SyncLivePriceCommandHandler
 from .routers.containers import RouteContainer
 
 from dependency_injector import containers, providers
@@ -16,7 +16,6 @@ def get_initialised_mediator(mediatorInstance: Mediator, handlerCollection : Lis
     return mediatorInstance
 
 def create_Handler(HandlerCls:type, is_behavior:bool = False):
-        print(HandlerCls.__class__)
         for x in ApplicationContainer.collection():
             hanlder, y = x
             if hanlder == HandlerCls:
@@ -48,6 +47,10 @@ class ApplicationContainer(containers.DeclarativeContainer):
     route_package.container.wire(modules=[".routers.transactions"])
    
     __handlertype_handlerFactory_pair = [
+         (StocksplitCommandHandler, command_package.container.stocksplitcommand_handler),
+         (AdjustSecurityAllocationPercentageCommandHandler, command_package.container.adjustsecurityallocationpercentagecommand_handler),
+         (AdjustSectorAllocationPercentageCommandHandler, command_package.container.adjustsectorallocationpercentagecommand_handler),
+         (AdjustAccountAllocationAmountCommandHandler, command_package.container.adjustaccountallocationamountcommand_handler),
          (DepositCashCommandHandler, command_package.container.depositcashcommand_handler),
          (PurchaseSecurityCommandHandler, command_package.container.purchasesecuritycommand_handler),
          (SellSecurityCommandHandler, command_package.container.sellsecuritycommand_handler),
