@@ -39,8 +39,10 @@ class SellSecurityCommandHandler():
             if entity:
                 raise Exception("duplicate transaction")
            
-            if (accountEntity.fundBalance + request.netAmount) != request.newBalance:
-                raise Exception("the account balance does not match up")
+            balance  = accountEntity.fundBalance + request.netAmount - request.newBalance 
+
+            if (round(balance)) != 0:
+                raise Exception(f"the account balance does not match up. {accountEntity.fundBalance} {request.netAmount} {request.newBalance} {(accountEntity.fundBalance - request.netAmount)}")
             
             entity = TransactionEntity()
             entity.netAmount = request.netAmount
@@ -70,8 +72,10 @@ class SellSecurityCommandHandler():
             if not securitySnapShotEntity:
                 raise Exception("no security snapshot found matching the filter")
 
+            realisedProfitOrLoss = ((request.netAmount/request.quantity) - securitySnapShotEntity.averagePerUnitCost) * request.quantity
+            entity.realisedProfit = realisedProfitOrLoss
             securitySnapShotEntity.quantity -= request.quantity
-            securitySnapShotEntity.totalRealisedProfit += ((request.netAmount/request.quantity) - securitySnapShotEntity.averagePerUnitCost) * request.quantity
+            securitySnapShotEntity.totalRealisedProfit += realisedProfitOrLoss
             securitySnapShotEntity.totalSaleFees += request.fees
             securitySnapShotEntity.totalSaleIncome += request.netAmount
             session.commit()

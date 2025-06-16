@@ -125,7 +125,7 @@ class TransactionEntity(Base):
     __tablename__ = "transaction"
 
     id = Column(Integer, primary_key=True, autoincrement=True, name="id")
-    externalId = Column(String(50), unique=True, name="external_id")
+    externalId = Column(String(50), unique=True, name="external_id", comment="the external Identity, unique per account id", doc="This is the external Id. This is unique per account")
     accountId = mapped_column(ForeignKey("account.id"), name="account_id")
     date = Column(DateTime, name="date", nullable=False)
     type = Column(String(50), name="type", nullable=False) 
@@ -133,11 +133,13 @@ class TransactionEntity(Base):
     netAmount = Column(Float, name="net_amount", nullable=False) 
     newBalance = Column(Float, name="new_balance", nullable=False)
     settlementDate = Column(DateTime, name="settlement_date", nullable=False)
-    fees = Column(Float, name="fees", nullable=True, default=0)
+    fees = Column(Float, name="fees", nullable=True, default = 0)
     
     securityId = mapped_column(ForeignKey("security.id"), name="security_id", nullable=True)  
-    perUnitCost = Column(Float, name="per_unit_cost", nullable=True, default=0)
+    perUnitCost = Column(Float, name="per_unit_cost", nullable=True, default = 0)
     quantity = Column(Integer, name="quantity", nullable=True, default = 0)
+    realisedProfit = Column(Float, name="realised_profit", nullable=True, comment="The profit of loss realised from the sale of the stock", doc="The profit of loss realised from the sale of the stock")
+    averagePerUnitCost = Column(Float, name="average_per_unit_cost", nullable=True, comment="The revised per unit cost after this purchase", doc="The revised per unit cost after the new purchase")
 
     security: Mapped[SecurityEntity] = relationship()
 

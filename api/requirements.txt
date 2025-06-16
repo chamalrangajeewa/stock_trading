@@ -7,3 +7,9 @@ mediatr
 sqlalchemy
 pandas
 pytest-asyncio
+beautifulsoup4
+aiohttp[speedups]
+playwright
+pyinstaller
+webdriver-manager
+selenium

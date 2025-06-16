@@ -79,7 +79,9 @@ class PurchaseSecurityCommandHandler():
                 securitySnapShotEntity.securityId = request.securityId              
                 session.add(securitySnapShotEntity)
 
-            securitySnapShotEntity.averagePerUnitCost = self._newAveragePerUnitCost(securitySnapShotEntity.averagePerUnitCost, securitySnapShotEntity.quantity, request.quantity, request.netAmount)
+            newAverageUnitCost = self._newAveragePerUnitCost(securitySnapShotEntity.averagePerUnitCost, securitySnapShotEntity.quantity, request.quantity, request.netAmount)
+            entity.averagePerUnitCost = newAverageUnitCost
+            securitySnapShotEntity.averagePerUnitCost = newAverageUnitCost
             securitySnapShotEntity.totalPurchaseFees += request.fees
             securitySnapShotEntity.totalPurchaseCost += request.netAmount
             securitySnapShotEntity.quantity += request.quantity
