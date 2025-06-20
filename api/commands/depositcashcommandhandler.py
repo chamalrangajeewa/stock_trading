@@ -33,9 +33,11 @@ class DepositCashCommandHandler():
             if entity:
                 raise Exception("duplicate transaction")
             
-            if (accountEntity.fundBalance + request.netAmount) != request.newBalance:
-                raise Exception("the account balance does not match up")
-           
+            balance  = (accountEntity.fundBalance + request.netAmount) - request.newBalance
+
+            if (round(balance)) != 0:
+                raise Exception(f"the account balance does not match up. {accountEntity.fundBalance} {request.netAmount} {request.newBalance} {(accountEntity.fundBalance + request.netAmount)}")
+       
             entity = TransactionEntity()
             entity.netAmount = request.netAmount
             entity.date = request.date

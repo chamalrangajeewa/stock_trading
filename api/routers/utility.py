@@ -89,21 +89,7 @@ def CreateRequest(
                     fees = fees,
                     quantity = quantity
                 )
-
-                # command : SellSecurityCommand = SellSecurityCommand(
-                #     accountId = request.accountId,
-                #     externalTransactionId = request.externalTransactionId,
-                #     transactionDate = request.transactionDate,
-                #     netAmount = request.netAmount,
-                #     description = request.description,
-                #     newBalance = request.newBalance,
-                #     settlementDate = request.settlementDate,
-                #     securityId = request.securityId,
-                #     unitPrice = request.unitPrice,
-                #     fees = request.fees,
-                #     quantity = request.quantity
-                # )
-                
+               
                 command : SellSecurityCommand = SellSecurityCommand()
                 command.externalAccountId = request.accountId
                 command.externalId = request.externalTransactionId
