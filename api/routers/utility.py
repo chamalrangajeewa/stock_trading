@@ -115,16 +115,6 @@ def CreateRequest(
                     newBalance = newBalance,
                     settlementDate = settlementDate
                 )
-                
-                # command: WidrawCashCommand = WidrawCashCommand(
-                #     accountId = request.accountId,
-                #     externalTransactionId = request.externalTransactionId,
-                #     transactionDate = request.transactionDate,
-                #     netAmount = request.netAmount,
-                #     description = request.description,
-                #     newBalance = request.newBalance,
-                #     settlementDate = request.settlementDate
-                # )
 
                 command: WidrawCashCommand = WidrawCashCommand()              
                 command.externalAccountId = request.accountId
