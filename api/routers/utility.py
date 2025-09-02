@@ -105,7 +105,7 @@ def CreateRequest(
 
                 return command
 
-            case "W":
+            case "PV":
                 request : WidrawCashRequest = WidrawCashRequest(
                     accountId = accountId,
                     externalTransactionId = externalTransactionId,
