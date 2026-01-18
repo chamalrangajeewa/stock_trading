@@ -46,7 +46,7 @@ class PurchaseSecurityCommandHandler():
             balance  = accountEntity.fundBalance - request.netAmount - request.newBalance 
 
             if (round(balance)) != 0:
-                raise Exception(f"the account balance does not match up. {accountEntity.fundBalance} {request.netAmount} {request.newBalance} {(accountEntity.fundBalance - request.netAmount)}")
+                raise Exception(f"the account balance does not match up. {request.externalId} {accountEntity.fundBalance} {request.netAmount} {request.newBalance} {(accountEntity.fundBalance - request.netAmount)}")
            
             entity = TransactionEntity()
             entity.netAmount = request.netAmount

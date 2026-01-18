@@ -82,5 +82,5 @@ async def stocksplit(
         externalAccountId = payload.accountId, 
         securityId = payload.securityId,
         quantity = payload.quantity)
-    
+
     await mediator.send_async(command)

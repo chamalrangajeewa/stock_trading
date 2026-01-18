@@ -1,5 +1,5 @@
 from api.persistence.database import Database
-from api.persistence.service import AccountEntity
+from api.persistence.service import AccountEntity, SecuritySnapShotEntity
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
@@ -20,5 +20,11 @@ class StocksplitCommandHandler():
             
             if not accountEntity:
                 raise Exception("account not found")
+
+            securitySnapShotEntity: SecuritySnapShotEntity = session.query(SecuritySnapShotEntity).filter(SecuritySnapShotEntity.securityId == request.securityId).first()
+            
+            newAveragePerUnitCost = (securitySnapShotEntity.averagePerUnitCost * securitySnapShotEntity.quantity) / (request.quantity)
+            securitySnapShotEntity.quantity = request.quantity
+            securitySnapShotEntity.averagePerUnitCost = newAveragePerUnitCost
 
             session.commit()
